@@ -40,5 +40,6 @@ public class HowlingMoon {
         HMItems.ITEMS.register(modEventBus);
         HMBlocks.BLOCKS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
+        WerewolfAttachment.ATTACHMENT_TYPES.register(modEventBus);
     }
 }
