@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "howlingmoonrising:block/deepslate_silver_ore_top",
+    "side": "howlingmoonrising:block/deepslate_silver_ore_side"
+  }
+}
