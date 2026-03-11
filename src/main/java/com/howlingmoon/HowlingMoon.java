@@ -8,6 +8,8 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
@@ -41,5 +43,31 @@ public class HowlingMoon {
         HMBlocks.BLOCKS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         WerewolfAttachment.ATTACHMENT_TYPES.register(modEventBus);
+        HMEntities.ENTITIES.register(modEventBus);
+        modEventBus.addListener(HowlingMoon::registerPackets);
+    }
+
+    private static void registerPackets(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(MODID).versioned("1.0");
+
+        // Servidor → Cliente
+        registrar.playToClient(
+                SyncWerewolfPacket.TYPE,
+                SyncWerewolfPacket.STREAM_CODEC,
+                SyncWerewolfPacket::handle
+        );
+
+        // Cliente → Servidor
+        registrar.playToServer(
+                UpgradeAttributePacket.TYPE,
+                UpgradeAttributePacket.STREAM_CODEC,
+                UpgradeAttributePacket::handle
+        );
+
+        registrar.playToServer(
+                TransformPacket.TYPE,
+                TransformPacket.STREAM_CODEC,
+                TransformPacket::handle
+        );
     }
 }
