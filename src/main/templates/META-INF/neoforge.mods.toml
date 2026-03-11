@@ -2,7 +2,7 @@ modLoader="javafml"
 
 loaderVersion="${loader_version_range}"
 
-license="${mod_license}"
+license="All Rights Reserved"
 
 [[mixins]]
 config="howlingmoonrising.mixins.json"
@@ -15,8 +15,13 @@ version="${mod_version}"
 
 displayName="Howling Moon Rising"
 
+logoFile="hm_logo.png"
+
+authors="mareca1202"
+
 description='''
-A werewolf mod for Minecraft 1.21.1.
+Howling Moon Rising — A werewolf mod for Minecraft 1.21.1.
+Copyright (c) 2026 mareca1202. All Rights Reserved.
 '''
 
 [[dependencies.howlingmoonrising]]

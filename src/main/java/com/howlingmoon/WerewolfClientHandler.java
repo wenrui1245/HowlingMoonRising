@@ -1,3 +1,4 @@
+// Copyright (c) 2026 mareca1202. All Rights Reserved.
 package com.howlingmoon;
 
 import net.minecraft.client.Minecraft;
