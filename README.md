@@ -7,8 +7,8 @@ This is my way of giving it back.
 Howling Moon Rising is a full remaster of the original mod, rebuilt from the ground up for modern Minecraft. Same spirit, same soul — but updated, improved, and brought back to life for the versions you're actually playing.
 Available for:
 
-✅ NeoForge 1.21.1
-🔧 Fabric 1.21.1 (Work in Progress)
+🔧 NeoForge 1.21.1 (Work in Progress)
+⛔ Fabric 1.21.1 (Not yet)
 
 
 This is a personal passion project. I'm not a professional developer — just someone who loves this game and wanted to bring back something special. Bear with me, enjoy the ride, and welcome back to the pack. 🐺
