@@ -2,6 +2,8 @@
 package com.howlingmoon;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,10 +15,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
@@ -26,7 +31,9 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -47,6 +54,28 @@ public class WerewolfAttributeHandler {
             MobEffects.MOVEMENT_SLOWDOWN,
             MobEffects.HUNGER
     );
+
+    private static final Set<Item> MEAT_FOODS = Set.of(
+            Items.BEEF, Items.COOKED_BEEF,
+            Items.PORKCHOP, Items.COOKED_PORKCHOP,
+            Items.CHICKEN, Items.COOKED_CHICKEN,
+            Items.MUTTON, Items.COOKED_MUTTON,
+            Items.RABBIT, Items.COOKED_RABBIT,
+            Items.COD, Items.COOKED_COD,
+            Items.SALMON, Items.COOKED_SALMON,
+            Items.TROPICAL_FISH,
+            Items.ROTTEN_FLESH
+    );
+
+    private static final List<String> CARNIVORE_MESSAGES = List.of(
+            "§8[§c⚠§8] §7The beast demands §cflesh§7.",
+            "§8[§7✦§8] §cThis has never been alive§7.",
+            "§8[§c⚠§8] §7Your instincts §creject §7this.",
+            "§8[§7✦§8] §cOnly blood and bone §7will satisfy the wolf.",
+            "§8[§c⚠§8] §7The beast within §csneers §7at this."
+    );
+
+    private static final Random RANDOM = new Random();
 
     private static ResourceLocation rl(String path) {
         return ResourceLocation.fromNamespaceAndPath(HowlingMoon.MODID, path);
@@ -228,6 +257,30 @@ public class WerewolfAttributeHandler {
 
         for (ItemStack drop : drops) {
             net.minecraft.world.level.block.Block.popResource(serverLevel, pos, drop);
+        }
+    }
+
+    // =====================
+    //   CARNIVORE DIET
+    // =====================
+
+    @SubscribeEvent
+    public static void onItemUseStart(LivingEntityUseItemEvent.Start event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+
+        WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
+        if (!cap.isWerewolf()) return;
+
+        ItemStack stack = event.getItem();
+        FoodProperties food = stack.get(DataComponents.FOOD);
+        if (food == null) return;
+
+        if (!MEAT_FOODS.contains(stack.getItem())) {
+            event.setCanceled(true);
+            player.displayClientMessage(
+                    Component.literal(CARNIVORE_MESSAGES.get(RANDOM.nextInt(CARNIVORE_MESSAGES.size()))),
+                    true
+            );
         }
     }
 
