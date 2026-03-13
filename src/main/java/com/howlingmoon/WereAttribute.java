@@ -6,7 +6,7 @@ public enum WereAttribute {
     STRENGTH    ("attribute.strength",     5),
     REND        ("attribute.rend",         5),
     PROTECTION  ("attribute.protection",   5),
-    SPEED       ("attribute.speed",        5),  // renombrado de MOVEMENT
+    SPEED       ("attribute.speed",        5),
     JUMP        ("attribute.jump",         3),
     FALL        ("attribute.fall",         3),
     KNOCKBACK   ("attribute.knockback",    3),
@@ -16,7 +16,7 @@ public enum WereAttribute {
     CLARITY     ("attribute.clarity",      3),
     EXHILARATING("attribute.exhilarating", 3),
     RESISTANCE  ("attribute.resistance",   3),
-    DEXTERITY   ("attribute.dexterity",    3);
+    MINING      ("attribute.mining",       3);
 
     private final String key;
     private final int maxLevel;
