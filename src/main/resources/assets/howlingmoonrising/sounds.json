@@ -1,0 +1,35 @@
+{
+  "howl": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "howlingmoonrising:howl",
+        "volume": 1.0,
+        "pitch": 1.0,
+        "stream": false
+      }
+    ]
+  },
+  "heartbeat": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "howlingmoonrising:heartbeat",
+        "volume": 0.6,
+        "pitch": 1.0,
+        "stream": false
+      }
+    ]
+  },
+  "heartbeat_delay": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "howlingmoonrising:heartbeat_delay",
+        "volume": 0.6,
+        "pitch": 1.0,
+        "stream": false
+      }
+    ]
+  }
+}

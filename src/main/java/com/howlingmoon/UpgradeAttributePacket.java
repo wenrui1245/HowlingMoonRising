@@ -7,6 +7,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record UpgradeAttributePacket(String attributeName) implements CustomPacketPayload {
@@ -35,7 +36,6 @@ public record UpgradeAttributePacket(String attributeName) implements CustomPack
             if (!cap.isWerewolf()) return;
             if (cap.getAvailableAttributePoints() <= 0) return;
 
-            // Buscar el atributo por nombre
             for (WereAttribute attr : WereAttribute.values()) {
                 if (attr.name().equalsIgnoreCase(packet.attributeName())) {
                     if (cap.canUpgradeAttribute(attr)) {
@@ -43,7 +43,15 @@ public record UpgradeAttributePacket(String attributeName) implements CustomPack
                         if (cap.isTransformed()) {
                             WerewolfAttributeHandler.applyAllModifiers(player, cap);
                         }
-                        WerewolfCommand.syncToClient(player, cap);
+                        PacketDistributor.sendToPlayer(player, new SyncWerewolfPacket(
+                                cap.isWerewolf(),
+                                cap.isTransformed(),
+                                cap.getLevel(),
+                                cap.getExperience(),
+                                cap.getUsedAttributePoints(),
+                                cap.getAttributeTree(),
+                                cap.isMoonForced()
+                        ));
                     }
                     break;
                 }

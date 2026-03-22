@@ -2,7 +2,6 @@
 package com.howlingmoon;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +16,8 @@ public record SyncWerewolfPacket(
         int level,
         int experience,
         int usedAttributePoints,
-        Map<String, Integer> attributeTree
+        Map<String, Integer> attributeTree,
+        boolean moonForced
 ) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<SyncWerewolfPacket> TYPE =
@@ -25,35 +25,39 @@ public record SyncWerewolfPacket(
                     ResourceLocation.fromNamespaceAndPath(HowlingMoon.MODID, "sync_werewolf")
             );
 
-    // Codec para Map<String, Integer>
-    private static final StreamCodec<FriendlyByteBuf, Map<String, Integer>> MAP_CODEC =
+    public static final StreamCodec<FriendlyByteBuf, SyncWerewolfPacket> STREAM_CODEC =
             StreamCodec.of(
-                    (buf, map) -> {
-                        buf.writeInt(map.size());
-                        map.forEach((k, v) -> {
+                    (buf, packet) -> {
+                        buf.writeBoolean(packet.isWerewolf());
+                        buf.writeBoolean(packet.isTransformed());
+                        buf.writeInt(packet.level());
+                        buf.writeInt(packet.experience());
+                        buf.writeInt(packet.usedAttributePoints());
+                        Map<String, Integer> tree = packet.attributeTree();
+                        buf.writeInt(tree.size());
+                        tree.forEach((k, v) -> {
                             buf.writeUtf(k);
                             buf.writeInt(v);
                         });
+                        buf.writeBoolean(packet.moonForced());
                     },
                     buf -> {
+                        boolean isWerewolf = buf.readBoolean();
+                        boolean isTransformed = buf.readBoolean();
+                        int level = buf.readInt();
+                        int experience = buf.readInt();
+                        int usedAttributePoints = buf.readInt();
                         int size = buf.readInt();
-                        Map<String, Integer> map = new HashMap<>();
+                        Map<String, Integer> tree = new HashMap<>();
                         for (int i = 0; i < size; i++) {
-                            map.put(buf.readUtf(), buf.readInt());
+                            tree.put(buf.readUtf(), buf.readInt());
                         }
-                        return map;
+                        boolean moonForced = buf.readBoolean();
+                        return new SyncWerewolfPacket(
+                                isWerewolf, isTransformed, level, experience,
+                                usedAttributePoints, tree, moonForced
+                        );
                     }
-            );
-
-    public static final StreamCodec<FriendlyByteBuf, SyncWerewolfPacket> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.BOOL,    SyncWerewolfPacket::isWerewolf,
-                    ByteBufCodecs.BOOL,    SyncWerewolfPacket::isTransformed,
-                    ByteBufCodecs.INT,     SyncWerewolfPacket::level,
-                    ByteBufCodecs.INT,     SyncWerewolfPacket::experience,
-                    ByteBufCodecs.INT,     SyncWerewolfPacket::usedAttributePoints,
-                    MAP_CODEC,             SyncWerewolfPacket::attributeTree,
-                    SyncWerewolfPacket::new
             );
 
     @Override
@@ -68,6 +72,7 @@ public record SyncWerewolfPacket(
                         .getData(WerewolfAttachment.WEREWOLF_DATA);
                 cap.setWerewolf(packet.isWerewolf());
                 cap.setTransformed(packet.isTransformed());
+                cap.setMoonForced(packet.moonForced());
                 cap.setLevel(packet.level());
                 cap.setExperience(packet.experience());
                 cap.setUsedAttributePoints(packet.usedAttributePoints());

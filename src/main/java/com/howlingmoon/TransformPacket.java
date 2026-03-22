@@ -6,6 +6,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record TransformPacket() implements CustomPacketPayload {
@@ -28,8 +29,25 @@ public record TransformPacket() implements CustomPacketPayload {
             if (!(context.player() instanceof ServerPlayer player)) return;
             WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
             if (!cap.isWerewolf()) return;
+
+            // No se puede destransformar en luna llena
+            if (cap.isTransformed()) {
+                long dayTime = player.level().getDayTime() % 24000;
+                boolean isNight = dayTime >= 13000 && dayTime <= 23000;
+                boolean isFullMoon = player.level().getMoonPhase() == 0;
+                if (isNight && isFullMoon) return;
+            }
+
             cap.setTransformed(!cap.isTransformed());
-            WerewolfCommand.syncToClient(player, cap);
+            PacketDistributor.sendToPlayer(player, new SyncWerewolfPacket(
+                    cap.isWerewolf(),
+                    cap.isTransformed(),
+                    cap.getLevel(),
+                    cap.getExperience(),
+                    cap.getUsedAttributePoints(),
+                    cap.getAttributeTree(),
+                    cap.isMoonForced()
+            ));
         });
     }
 }

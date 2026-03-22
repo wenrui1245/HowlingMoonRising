@@ -45,6 +45,7 @@ public class HowlingMoon {
         CREATIVE_MODE_TABS.register(modEventBus);
         WerewolfAttachment.ATTACHMENT_TYPES.register(modEventBus);
         HMEntities.ENTITIES.register(modEventBus);
+        HMSounds.SOUNDS.register(modEventBus);  // <-- línea nueva
         modEventBus.addListener(HowlingMoon::registerPackets);
     }
 

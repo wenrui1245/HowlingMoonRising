@@ -65,7 +65,6 @@ public class WerewolfEventHandler {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
         if (player.level().isClientSide()) return;
 
-        // Solo comprobar cada 20 ticks (1 segundo) para no sobrecargar
         if (player.tickCount % 20 != 0) return;
 
         WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
@@ -77,7 +76,6 @@ public class WerewolfEventHandler {
         boolean shouldBeForced = isNight && isFullMoon;
 
         if (shouldBeForced && !cap.isTransformed()) {
-            // Forzar transformación
             cap.setTransformed(true);
             cap.setMoonForced(true);
             WerewolfAttributeHandler.applyAllModifiers(player, cap);
@@ -87,12 +85,15 @@ public class WerewolfEventHandler {
                             "§c☾ The full moon rises... the beast takes control!"
                     )
             );
-        } else if (shouldBeForced && !cap.isMoonForced()) {
-            // Estaba transformado manualmente, marcar como forzado
+        } else if (shouldBeForced && cap.isTransformed() && !cap.isMoonForced()) {
             cap.setMoonForced(true);
             syncToClient(player);
+            player.sendSystemMessage(
+                    net.minecraft.network.chat.Component.literal(
+                            "§c☾ The full moon rises... you cannot return to human form!"
+                    )
+            );
         } else if (!shouldBeForced && cap.isMoonForced()) {
-            // La noche terminó — destransformar solo si fue forzado por la luna
             cap.setTransformed(false);
             cap.setMoonForced(false);
             WerewolfAttributeHandler.removeAllModifiers(player);
@@ -102,13 +103,6 @@ public class WerewolfEventHandler {
                             "§7The moon sets... you return to yourself."
                     )
             );
-        }
-
-        // Re-forzar si intenta destransformarse durante la luna llena
-        if (shouldBeForced && !cap.isTransformed()) {
-            cap.setTransformed(true);
-            WerewolfAttributeHandler.applyAllModifiers(player, cap);
-            syncToClient(player);
         }
     }
 
@@ -164,7 +158,8 @@ public class WerewolfEventHandler {
                 cap.getLevel(),
                 cap.getExperience(),
                 cap.getUsedAttributePoints(),
-                cap.getAttributeTree()
+                cap.getAttributeTree(),
+                cap.isMoonForced()
         ));
     }
 }

@@ -46,6 +46,17 @@ public class WerewolfCommand {
                 return 0;
             }
 
+            if (cap.isTransformed()) {
+                long dayTime = player.level().getDayTime() % 24000;
+                boolean isNight = dayTime >= 13000 && dayTime <= 23000;
+                boolean isFullMoon = player.level().getMoonPhase() == 0;
+                if (isNight && isFullMoon) {
+                    ctx.getSource().sendFailure(Component.literal(
+                            "§c☾ The full moon controls you... you cannot resist the transformation!"));
+                    return 0;
+                }
+            }
+
             boolean nowTransformed = !cap.isTransformed();
             cap.setTransformed(nowTransformed);
             syncToClient(player, cap);
@@ -182,7 +193,6 @@ public class WerewolfCommand {
             cap.upgradeAttribute(found);
             syncToClient(player, cap);
 
-            // Reaplicar atributos inmediatamente si está transformado
             if (cap.isTransformed()) {
                 WerewolfAttributeHandler.applyAllModifiers(player, cap);
             }
@@ -207,7 +217,8 @@ public class WerewolfCommand {
                 cap.getLevel(),
                 cap.getExperience(),
                 cap.getUsedAttributePoints(),
-                cap.getAttributeTree()
+                cap.getAttributeTree(),
+                cap.isMoonForced()  // <-- nuevo campo
         ));
     }
 }

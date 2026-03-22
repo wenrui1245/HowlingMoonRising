@@ -18,8 +18,8 @@ public class HMItems {
     public static final DeferredItem<Item> SILVER_INGOT =
             ITEMS.registerSimpleItem("silver_ingot", new Item.Properties());
 
-    public static final DeferredItem<Item> WOLFSBANE_POTION =
-            ITEMS.registerSimpleItem("wolfsbane_potion", new Item.Properties());
+    public static final DeferredItem<ItemWolfsbanePotion> WOLFSBANE_POTION =
+            ITEMS.register("wolfsbane_potion", ItemWolfsbanePotion::new);
 
     public static final DeferredItem<SwordItem> SILVER_SWORD =
             ITEMS.register("silver_sword", () -> new SwordItem(
