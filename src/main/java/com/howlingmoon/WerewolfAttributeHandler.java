@@ -45,6 +45,7 @@ public class WerewolfAttributeHandler {
     private static final ResourceLocation RL_KNOCKBACK   = rl("were_knockback");
     private static final ResourceLocation RL_KNOCKRESIST = rl("were_knockresist");
     private static final ResourceLocation RL_JUMP        = rl("were_jump");
+    private static final ResourceLocation RL_SCALE       = rl("were_scale");
 
     private static final Set<Holder<MobEffect>> NEGATIVE_EFFECTS = Set.of(
             MobEffects.POISON,
@@ -331,6 +332,10 @@ public class WerewolfAttributeHandler {
         if (jump > 0)
             addModifier(player, Attributes.JUMP_STRENGTH, RL_JUMP,
                     jump * 0.1, AttributeModifier.Operation.ADD_VALUE);
+
+        // Hitbox & POV (Scale)
+        addModifier(player, Attributes.SCALE, RL_SCALE,
+                0.15, AttributeModifier.Operation.ADD_VALUE);
     }
 
     public static void removeAllModifiers(ServerPlayer player) {
@@ -339,6 +344,7 @@ public class WerewolfAttributeHandler {
         removeModifier(player, Attributes.ATTACK_KNOCKBACK,     RL_KNOCKBACK);
         removeModifier(player, Attributes.KNOCKBACK_RESISTANCE, RL_KNOCKRESIST);
         removeModifier(player, Attributes.JUMP_STRENGTH,        RL_JUMP);
+        removeModifier(player, Attributes.SCALE,                RL_SCALE);
     }
 
     private static void addModifier(ServerPlayer player,
