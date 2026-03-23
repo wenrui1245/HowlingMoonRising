@@ -122,7 +122,7 @@ public class WerewolfAttributeHandler {
     }
 
     // =====================
-    //   STRENGTH + REND + EXHILARATING
+    //   STRENGTH + EXHILARATING
     // =====================
 
     @SubscribeEvent
@@ -141,19 +141,6 @@ public class WerewolfAttributeHandler {
             }
         }
 
-        int rendLevel = cap.getAttributeLevel(WereAttribute.REND);
-        if (rendLevel > 0 && event.getTarget() instanceof LivingEntity target) {
-            int duration;
-            int amplifier;
-            switch (rendLevel) {
-                case 1 -> { duration = 60;  amplifier = 0; }
-                case 2 -> { duration = 100; amplifier = 0; }
-                case 3 -> { duration = 100; amplifier = 1; }
-                case 4 -> { duration = 140; amplifier = 1; }
-                default -> { duration = 140; amplifier = 2; }
-            }
-            target.addEffect(new MobEffectInstance(MobEffects.POISON, duration, amplifier, false, true));
-        }
 
         int exhilaratingLevel = cap.getAttributeLevel(WereAttribute.EXHILARATING);
         if (exhilaratingLevel > 0 && event.getTarget() instanceof LivingEntity) {

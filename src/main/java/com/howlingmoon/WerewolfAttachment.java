@@ -29,6 +29,22 @@ public class WerewolfAttachment {
                                     cap.setLevel(tag.getInt("level"));
                                     cap.setExperience(tag.getInt("experience"));
                                     cap.setUsedAttributePoints(tag.getInt("usedAttributePoints"));
+                                    cap.setUsedAbilityPoints(tag.getInt("usedAbilityPoints"));
+
+                                    if (tag.contains("selectedAbility")) {
+                                        try {
+                                            cap.setSelectedAbility(WereAbility.valueOf(tag.getString("selectedAbility")));
+                                        } catch (IllegalArgumentException ignored) {}
+                                    }
+
+                                    java.util.Set<WereAbility> unlocked = java.util.EnumSet.noneOf(WereAbility.class);
+                                    CompoundTag unlockedTag = tag.getCompound("unlockedAbilities");
+                                    for (String key : unlockedTag.getAllKeys()) {
+                                        try {
+                                            unlocked.add(WereAbility.valueOf(key));
+                                        } catch (IllegalArgumentException ignored) {}
+                                    }
+                                    cap.setUnlockedAbilities(unlocked);
 
                                     Map<String, Integer> tree = new HashMap<>();
                                     CompoundTag treeTag = tag.getCompound("attributeTree");
@@ -49,6 +65,17 @@ public class WerewolfAttachment {
                                     tag.putInt("level", cap.getLevel());
                                     tag.putInt("experience", cap.getExperience());
                                     tag.putInt("usedAttributePoints", cap.getUsedAttributePoints());
+                                    tag.putInt("usedAbilityPoints", cap.getUsedAbilityPoints());
+
+                                    if (cap.getSelectedAbility() != null) {
+                                        tag.putString("selectedAbility", cap.getSelectedAbility().name());
+                                    }
+
+                                    CompoundTag unlockedTag = new CompoundTag();
+                                    for (WereAbility ability : cap.getUnlockedAbilities()) {
+                                        unlockedTag.putBoolean(ability.name(), true);
+                                    }
+                                    tag.put("unlockedAbilities", unlockedTag);
 
                                     CompoundTag treeTag = new CompoundTag();
                                     for (Map.Entry<String, Integer> entry : cap.getAttributeTree().entrySet()) {

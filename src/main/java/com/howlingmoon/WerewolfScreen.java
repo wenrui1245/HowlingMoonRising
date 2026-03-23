@@ -25,6 +25,9 @@ public class WerewolfScreen extends Screen {
     private static final int COLOR_DOT_EMPTY   = 0xFF3A2020;
     private static final int COLOR_POINTS      = 0xFFFFD700;
 
+    private enum Tab { ATTRIBUTES, ABILITIES, INCLINATIONS }
+    private Tab currentTab = Tab.ATTRIBUTES;
+
     public WerewolfScreen() {
         super(Component.literal("Werewolf"));
     }
@@ -43,30 +46,97 @@ public class WerewolfScreen extends Screen {
         WerewolfCapability cap = getCapability();
         if (cap == null) return;
 
-        WereAttribute[] attrs = WereAttribute.values();
-        int startY = top + 72;
-        int rowHeight = 16;
+        if (currentTab == Tab.ATTRIBUTES) {
+            WereAttribute[] attrs = WereAttribute.values();
+            int startY = top + 72;
+            int rowHeight = 16;
 
-        for (int i = 0; i < attrs.length; i++) {
-            WereAttribute attr = attrs[i];
-            int btnX = left + WIDTH - 22;
-            int btnY = startY + i * rowHeight - 3;
+            for (int i = 0; i < attrs.length; i++) {
+                WereAttribute attr = attrs[i];
+                int btnX = left + WIDTH - 22;
+                int btnY = startY + i * rowHeight - 3;
 
-            boolean canUpgrade = cap.isWerewolf()
-                    && cap.getAvailableAttributePoints() > 0
-                    && cap.canUpgradeAttribute(attr);
+                boolean canUpgrade = cap.isWerewolf()
+                        && cap.getAvailablePoints() > 0
+                        && cap.canUpgradeAttribute(attr);
 
-            Button btn = Button.builder(Component.literal("+"), b -> {
-                        PacketDistributor.sendToServer(new UpgradeAttributePacket(attr.name()));
-                        this.clearWidgets();
-                        this.init();
-                    })
-                    .bounds(btnX, btnY, 14, 10)
-                    .build();
+                Button btn = Button.builder(Component.literal("+"), b -> {
+                            PacketDistributor.sendToServer(new UpgradeAttributePacket(attr.name()));
+                            this.clearWidgets();
+                            this.init();
+                        })
+                        .bounds(btnX, btnY, 14, 10)
+                        .build();
 
-            btn.active = canUpgrade;
-            this.addRenderableWidget(btn);
+                btn.active = canUpgrade;
+                this.addRenderableWidget(btn);
+            }
+        } else if (currentTab == Tab.ABILITIES) {
+            WereAbility[] abilities = WereAbility.values();
+            int startY = top + 72;
+            int rowHeight = 18;
+
+            for (int i = 0; i < abilities.length; i++) {
+                WereAbility ability = abilities[i];
+                int btnX = left + WIDTH - 55;
+                int btnY = startY + i * rowHeight - 3;
+
+                if (!cap.getUnlockedAbilities().contains(ability)) {
+                    Button btn = Button.builder(Component.literal("Unlock"), b -> {
+                                PacketDistributor.sendToServer(new com.howlingmoon.network.UnlockAbilityPacket(ability));
+                                this.clearWidgets();
+                                this.init();
+                            })
+                            .bounds(btnX, btnY, 45, 12)
+                            .build();
+
+                    btn.active = cap.getAvailablePoints() >= ability.getCost();
+                    this.addRenderableWidget(btn);
+                }
+            }
+        } else if (currentTab == Tab.INCLINATIONS) {
+            WereInclination[] inclinations = WereInclination.values();
+            int startY = top + 72;
+            int rowHeight = 45;
+
+            for (int i = 0; i < inclinations.length; i++) {
+                WereInclination incl = inclinations[i];
+                if (incl == WereInclination.NEUTRAL) continue;
+
+                int btnX = left + WIDTH - 60;
+                int btnY = startY + (i - 1) * rowHeight + 15;
+
+                Button btn = Button.builder(Component.literal("Select"), b -> {
+                            PacketDistributor.sendToServer(new com.howlingmoon.network.SelectInclinationPacket(incl));
+                            this.clearWidgets();
+                            this.init();
+                        })
+                        .bounds(btnX, btnY, 50, 14)
+                        .build();
+
+                btn.active = cap.getInclination() == WereInclination.NEUTRAL && cap.getLevel() >= 5;
+                this.addRenderableWidget(btn);
+            }
         }
+
+        // Tab buttons
+        this.addRenderableWidget(Button.builder(Component.literal("Attributes"), b -> {
+            currentTab = Tab.ATTRIBUTES;
+            this.clearWidgets();
+            this.init();
+        }).bounds(left + 10, top + HEIGHT - 25, 70, 16).build()).active = (currentTab != Tab.ATTRIBUTES);
+
+        this.addRenderableWidget(Button.builder(Component.literal("Abilities"), b -> {
+            currentTab = Tab.ABILITIES;
+            this.clearWidgets();
+            this.init();
+        }).bounds(left + 85, top + HEIGHT - 25, 70, 16).build()).active = (currentTab != Tab.ABILITIES);
+
+        this.addRenderableWidget(Button.builder(Component.literal("Paths"), b -> {
+            currentTab = Tab.INCLINATIONS;
+            this.clearWidgets();
+            this.init();
+        }).bounds(left + 160, top + HEIGHT - 25, 70, 16).build()).active = (currentTab != Tab.INCLINATIONS);
     }
 
     @Override
@@ -99,9 +169,9 @@ public class WerewolfScreen extends Screen {
         // Nivel y puntos
         gfx.drawString(this.font, "§7Level  §f" + cap.getLevel() + " §7/ 20",
                 left + 12, top + 24, COLOR_TEXT, false);
-        String pts = "Points: §f" + cap.getAvailableAttributePoints();
+        String pts = "Points: §f" + cap.getAvailablePoints();
         gfx.drawString(this.font, pts,
-                left + WIDTH - 12 - this.font.width("Points: " + cap.getAvailableAttributePoints()) - 4,
+                left + WIDTH - 12 - this.font.width("Points: " + cap.getAvailablePoints()) - 4,
                 top + 24, COLOR_POINTS, false);
 
         // Barra XP
@@ -124,44 +194,108 @@ public class WerewolfScreen extends Screen {
         // Separador
         gfx.fill(left + 8, top + 49, left + WIDTH - 8, top + 50, COLOR_BORDER);
 
-        // Cabecera
-        gfx.drawString(this.font, "§7Attribute", left + 12, top + 55, COLOR_TEXT_DIM, false);
-        gfx.drawString(this.font, "§7Level",     left + WIDTH - 80, top + 55, COLOR_TEXT_DIM, false);
-        gfx.fill(left + 8, top + 65, left + WIDTH - 8, top + 66, 0xFF2A1010);
+        if (currentTab == Tab.ATTRIBUTES) {
+            // Cabecera
+            gfx.drawString(this.font, "§7Attribute", left + 12, top + 55, COLOR_TEXT_DIM, false);
+            gfx.drawString(this.font, "§7Level", left + WIDTH - 80, top + 55, COLOR_TEXT_DIM, false);
+            gfx.fill(left + 8, top + 65, left + WIDTH - 8, top + 66, 0xFF2A1010);
 
-        // Atributos
-        WereAttribute[] attrs = WereAttribute.values();
-        int startY = top + 72;
-        int rowHeight = 16;
+            // Atributos
+            WereAttribute[] attrs = WereAttribute.values();
+            int startY = top + 72;
+            int rowHeight = 16;
 
-        for (int i = 0; i < attrs.length; i++) {
-            WereAttribute attr = attrs[i];
-            int rowY = startY + i * rowHeight;
-            int attrLevel = cap.getAttributeLevel(attr);
-            int maxLevel  = attr.getMaxLevel();
+            for (int i = 0; i < attrs.length; i++) {
+                WereAttribute attr = attrs[i];
+                int rowY = startY + i * rowHeight;
+                int attrLevel = cap.getAttributeLevel(attr);
+                int maxLevel = attr.getMaxLevel();
 
-            // Hover
-            if (mouseX >= left + 8 && mouseX <= left + WIDTH - 8
-                    && mouseY >= rowY - 3 && mouseY <= rowY + rowHeight - 4) {
-                gfx.fill(left + 8, rowY - 3, left + WIDTH - 8, rowY + rowHeight - 4, COLOR_ATTR_HOVER);
+                if (mouseX >= left + 8 && mouseX <= left + WIDTH - 8
+                        && mouseY >= rowY - 3 && mouseY <= rowY + rowHeight - 4) {
+                    gfx.fill(left + 8, rowY - 3, left + WIDTH - 8, rowY + rowHeight - 4, COLOR_ATTR_HOVER);
+                }
+
+                gfx.drawString(this.font, capitalize(attr.name()), left + 14, rowY, COLOR_TEXT, false);
+
+                int dotStartX = left + WIDTH - 84;
+                int dotSize = 5;
+                int dotGap = 3;
+                for (int d = 0; d < maxLevel; d++) {
+                    int dotX = dotStartX + d * (dotSize + dotGap);
+                    gfx.fill(dotX, rowY, dotX + dotSize, rowY + dotSize,
+                            d < attrLevel ? COLOR_DOT_FILLED : COLOR_DOT_EMPTY);
+                }
             }
+        } else if (currentTab == Tab.ABILITIES) {
+            // Cabecera
+            gfx.drawString(this.font, "§7Ability", left + 12, top + 55, COLOR_TEXT_DIM, false);
+            gfx.drawString(this.font, "§7Cost", left + WIDTH - 80, top + 55, COLOR_TEXT_DIM, false);
+            gfx.fill(left + 8, top + 65, left + WIDTH - 8, top + 66, 0xFF2A1010);
 
-            // Nombre
-            gfx.drawString(this.font, capitalize(attr.name()), left + 14, rowY, COLOR_TEXT, false);
+            // Habilidades
+            WereAbility[] abilities = WereAbility.values();
+            int startY = top + 72;
+            int rowHeight = 18;
 
-            // Puntos (círculos)
-            int dotStartX = left + WIDTH - 84;
-            int dotSize = 5;
-            int dotGap  = 3;
-            for (int d = 0; d < maxLevel; d++) {
-                int dotX = dotStartX + d * (dotSize + dotGap);
-                gfx.fill(dotX, rowY, dotX + dotSize, rowY + dotSize,
-                        d < attrLevel ? COLOR_DOT_FILLED : COLOR_DOT_EMPTY);
+            for (int i = 0; i < abilities.length; i++) {
+                WereAbility ability = abilities[i];
+                int rowY = startY + i * rowHeight;
+                boolean unlocked = cap.getUnlockedAbilities().contains(ability);
+
+                if (mouseX >= left + 8 && mouseX <= left + WIDTH - 8
+                        && mouseY >= rowY - 3 && mouseY <= rowY + rowHeight - 4) {
+                    gfx.fill(left + 8, rowY - 3, left + WIDTH - 8, rowY + rowHeight - 4, COLOR_ATTR_HOVER);
+                }
+
+                String name = unlocked ? "§6" + ability.getDisplayName() : "§7" + ability.getDisplayName();
+                gfx.drawString(this.font, name, left + 14, rowY, COLOR_TEXT, false);
+
+                if (!unlocked) {
+                    gfx.drawString(this.font, "§e" + ability.getCost(), left + WIDTH - 75, rowY, COLOR_TEXT, false);
+                } else {
+                    gfx.drawString(this.font, "§a✔", left + WIDTH - 75, rowY, COLOR_TEXT, false);
+                }
+            }
+        } else if (currentTab == Tab.INCLINATIONS) {
+            // Cabecera
+            gfx.drawString(this.font, "§7Choose your path", left + 12, top + 55, COLOR_TEXT_DIM, false);
+            gfx.fill(left + 8, top + 65, left + WIDTH - 8, top + 66, 0xFF2A1010);
+
+            WereInclination[] inclinations = WereInclination.values();
+            int startY = top + 72;
+            int rowHeight = 45;
+
+            for (int i = 0; i < inclinations.length; i++) {
+                WereInclination incl = inclinations[i];
+                if (incl == WereInclination.NEUTRAL) continue;
+
+                int rowY = startY + (i - 1) * rowHeight;
+                boolean isCurrent = cap.getInclination() == incl;
+
+                if (mouseX >= left + 8 && mouseX <= left + WIDTH - 8
+                        && mouseY >= rowY - 3 && mouseY <= rowY + rowHeight - 4) {
+                    gfx.fill(left + 8, rowY - 3, left + WIDTH - 8, rowY + rowHeight - 4, COLOR_ATTR_HOVER);
+                }
+
+                String title = (isCurrent ? "§a" : "§f") + incl.getDisplayName();
+                gfx.drawString(this.font, title, left + 14, rowY, COLOR_TEXT, false);
+                
+                String desc = incl.getDescription();
+                int wrapWidth = WIDTH - 80;
+                java.util.List<net.minecraft.util.FormattedCharSequence> lines = this.font.split(Component.literal("§7" + desc), wrapWidth);
+                for (int l = 0; l < lines.size(); l++) {
+                    gfx.drawString(this.font, lines.get(l), left + 14, rowY + 12 + l * 10, 0xFFFFFFFF, false);
+                }
+            }
+            
+            if (cap.getInclination() == WereInclination.NEUTRAL && cap.getLevel() < 5) {
+                gfx.drawCenteredString(this.font, "§8Unlocks at Level 5", left + WIDTH/2, top + HEIGHT/2 + 20, 0xFFFFFFFF);
             }
         }
 
         // Separador inferior
-        int footerY = startY + attrs.length * rowHeight + 4;
+        int footerY = top + HEIGHT - 20;
         gfx.fill(left + 8, footerY, left + WIDTH - 8, footerY + 1, COLOR_BORDER);
 
         // Footer

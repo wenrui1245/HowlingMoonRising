@@ -129,7 +129,7 @@ public class WerewolfCommand {
                     "§6--- Werewolf Stats ---\n" +
                             "§eLevel: §f" + cap.getLevel() + "/20\n" +
                             "§eXP: §f" + cap.getExperience() + "/" + cap.expNeededForNextLevel() + "\n" +
-                            "§eAttribute Points: §f" + cap.getAvailableAttributePoints() + "\n" +
+                            "§eAttribute Points: §f" + cap.getAvailablePoints() + "\n" +
                             "§eTransformed: §f" + cap.isTransformed()
             ), false);
 
@@ -178,7 +178,7 @@ public class WerewolfCommand {
                 return 0;
             }
 
-            if (cap.getAvailableAttributePoints() <= 0) {
+            if (cap.getAvailablePoints() <= 0) {
                 ctx.getSource().sendFailure(Component.literal("§cNo attribute points available!"));
                 return 0;
             }
@@ -201,7 +201,7 @@ public class WerewolfCommand {
             ctx.getSource().sendSuccess(() -> Component.literal(
                     "§a" + finalFound.name() + " upgraded to level "
                             + cap.getAttributeLevel(finalFound) + "/" + finalFound.getMaxLevel()
-                            + " §7(" + cap.getAvailableAttributePoints() + " points remaining)"
+                            + " §7(" + cap.getAvailablePoints() + " points remaining)"
             ), false);
 
             return Command.SINGLE_SUCCESS;
@@ -211,14 +211,6 @@ public class WerewolfCommand {
     }
 
     public static void syncToClient(ServerPlayer player, WerewolfCapability cap) {
-        PacketDistributor.sendToPlayer(player, new SyncWerewolfPacket(
-                cap.isWerewolf(),
-                cap.isTransformed(),
-                cap.getLevel(),
-                cap.getExperience(),
-                cap.getUsedAttributePoints(),
-                cap.getAttributeTree(),
-                cap.isMoonForced()  // <-- nuevo campo
-        ));
+        PacketDistributor.sendToPlayer(player, SyncWerewolfPacket.fromCap(cap));
     }
 }

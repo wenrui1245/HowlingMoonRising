@@ -23,8 +23,24 @@ public class WerewolfKeyBindings {
     );
 
 
+    public static final KeyMapping OPEN_RADIAL = new KeyMapping(
+            "key.howlingmoonrising.open_radial",
+            InputConstants.Type.KEYSYM,
+            InputConstants.KEY_R,
+            "key.categories.howlingmoonrising"
+    );
+
+    public static final KeyMapping USE_ABILITY = new KeyMapping(
+            "key.howlingmoonrising.use_ability",
+            InputConstants.Type.KEYSYM,
+            InputConstants.KEY_V,
+            "key.categories.howlingmoonrising"
+    );
+
     public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(OPEN_MENU);
         event.register(TRANSFORM);
+        event.register(OPEN_RADIAL);
+        event.register(USE_ABILITY);
     }
 }

@@ -4,6 +4,7 @@ package com.howlingmoon;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import com.howlingmoon.network.*;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
@@ -61,6 +62,12 @@ public class HowlingMoon {
                 SyncWerewolfPacket::handle
         );
 
+        registrar.playToClient(
+                AbilityCooldownPacket.TYPE,
+                AbilityCooldownPacket.STREAM_CODEC,
+                AbilityCooldownPacket::handle
+        );
+
         // Cliente → Servidor
         registrar.playToServer(
                 UpgradeAttributePacket.TYPE,
@@ -72,6 +79,24 @@ public class HowlingMoon {
                 TransformPacket.TYPE,
                 TransformPacket.STREAM_CODEC,
                 TransformPacket::handle
+        );
+
+        registrar.playToServer(
+                UseAbilityPacket.TYPE,
+                UseAbilityPacket.STREAM_CODEC,
+                UseAbilityPacket::handle
+        );
+
+        registrar.playToServer(
+                UnlockAbilityPacket.TYPE,
+                UnlockAbilityPacket.STREAM_CODEC,
+                UnlockAbilityPacket::handle
+        );
+
+        registrar.playToServer(
+                SelectInclinationPacket.TYPE,
+                SelectInclinationPacket.STREAM_CODEC,
+                SelectInclinationPacket::handle
         );
     }
 }

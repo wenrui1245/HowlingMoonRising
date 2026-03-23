@@ -52,6 +52,9 @@ public class WerewolfEventHandler {
             newCap.setLevel(oldCap.getLevel());
             newCap.setExperience(oldCap.getExperience());
             newCap.setUsedAttributePoints(oldCap.getUsedAttributePoints());
+            newCap.setUsedAbilityPoints(oldCap.getUsedAbilityPoints());
+            newCap.setUnlockedAbilities(new java.util.HashSet<>(oldCap.getUnlockedAbilities()));
+            newCap.setSelectedAbility(oldCap.getSelectedAbility());
             newCap.setAttributeTree(new java.util.HashMap<>(oldCap.getAttributeTree()));
         }
     }
@@ -69,6 +72,8 @@ public class WerewolfEventHandler {
 
         WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
         if (!cap.isWerewolf()) return;
+
+        WerewolfAbilityHandler.tick(player);
 
         long dayTime = player.level().getDayTime() % 24000;
         boolean isNight = dayTime >= 13000 && dayTime <= 23000;
@@ -131,6 +136,10 @@ public class WerewolfEventHandler {
 
         if (xpGained <= 0) return;
 
+        if (cap.getInclination() == WereInclination.PREDATOR) {
+            xpGained = (int) (xpGained * 1.5);
+        }
+
         int levelBefore = cap.getLevel();
         cap.addExperience(xpGained);
         int levelAfter = cap.getLevel();
@@ -146,20 +155,66 @@ public class WerewolfEventHandler {
         syncToClient(player);
     }
 
+    @SubscribeEvent
+    public static void onPlayerTickClimb(PlayerTickEvent.Post event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+
+        WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
+        if (!cap.isWerewolf() || !cap.isTransformed() || !cap.getUnlockedAbilities().contains(WereAbility.CLIMB)) return;
+
+        if (player.horizontalCollision && !player.onGround()) {
+            net.minecraft.world.phys.Vec3 delta = player.getDeltaMovement();
+            // Subir si mira hacia la pared y se mueve hacia adelante
+            if (player.zza > 0) {
+                player.setDeltaMovement(delta.x, 0.2, delta.z);
+                player.fallDistance = 0;
+            } else if (delta.y < 0) {
+                // Deslizarse lentamente hacia abajo
+                player.setDeltaMovement(delta.x, -0.1, delta.z);
+                player.fallDistance = 0;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerWakeUp(net.neoforged.neoforge.event.entity.player.PlayerWakeUpEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (player.level().isClientSide()) return;
+
+        WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
+        if (!cap.isWerewolf()) return;
+
+        int level = cap.getLevel();
+        if (level % 5 == 0 && !cap.hasCompletedTrialFor(level)) {
+            // Check for Moon Pearl
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                net.minecraft.world.item.ItemStack stack = player.getInventory().getItem(i);
+                if (stack.is(HMItems.MOON_PEARL.get())) {
+                    stack.shrink(1);
+                    cap.completeTrial(level);
+                    syncToClient(player);
+                    player.sendSystemMessage(
+                            net.minecraft.network.chat.Component.literal(
+                                    "§d✨ The Moon Pearl resonates... your path forward is clear!"
+                            )
+                    );
+                    return;
+                }
+            }
+            player.sendSystemMessage(
+                    net.minecraft.network.chat.Component.literal(
+                            "§5⚠ Your progress is stalled. You feel a pull towards a Moon Pearl..."
+                    )
+            );
+        }
+    }
+
     // =====================
     //   HELPER
     // =====================
 
     private static void syncToClient(ServerPlayer player) {
         WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
-        PacketDistributor.sendToPlayer(player, new SyncWerewolfPacket(
-                cap.isWerewolf(),
-                cap.isTransformed(),
-                cap.getLevel(),
-                cap.getExperience(),
-                cap.getUsedAttributePoints(),
-                cap.getAttributeTree(),
-                cap.isMoonForced()
-        ));
+        PacketDistributor.sendToPlayer(player, SyncWerewolfPacket.fromCap(cap));
     }
 }

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "combat",
+  "key": {
+    "S": {
+      "item": "howlingmoonrising:silver_ingot"
+    },
+    "I": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    "S",
+    "S",
+    "I"
+  ],
+  "result": {
+    "count": 1,
+    "id": "howlingmoonrising:silver_sword"
+  }
+}

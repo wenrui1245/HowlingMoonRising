@@ -39,15 +39,7 @@ public record TransformPacket() implements CustomPacketPayload {
             }
 
             cap.setTransformed(!cap.isTransformed());
-            PacketDistributor.sendToPlayer(player, new SyncWerewolfPacket(
-                    cap.isWerewolf(),
-                    cap.isTransformed(),
-                    cap.getLevel(),
-                    cap.getExperience(),
-                    cap.getUsedAttributePoints(),
-                    cap.getAttributeTree(),
-                    cap.isMoonForced()
-            ));
+            PacketDistributor.sendToPlayer(player, SyncWerewolfPacket.fromCap(cap));
         });
     }
 }

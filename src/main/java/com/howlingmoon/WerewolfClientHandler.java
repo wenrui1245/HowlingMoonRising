@@ -7,6 +7,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import com.howlingmoon.client.RadialMenuScreen;
+import com.howlingmoon.client.ClientAbilityData;
+import com.howlingmoon.network.UseAbilityPacket;
 
 @EventBusSubscriber(modid = HowlingMoon.MODID, value = Dist.CLIENT)
 public class WerewolfClientHandler {
@@ -29,6 +32,29 @@ public class WerewolfClientHandler {
             WerewolfCapability cap = mc.player.getData(WerewolfAttachment.WEREWOLF_DATA);
             if (cap.isWerewolf()) {
                 PacketDistributor.sendToServer(new TransformPacket());
+            }
+        }
+
+        // Tick cooldowns
+        ClientAbilityData.tick();
+
+        // Tecla R — menú radial
+        if (WerewolfKeyBindings.OPEN_RADIAL.consumeClick()) {
+            if (mc.screen == null) {
+                WerewolfCapability cap = mc.player.getData(WerewolfAttachment.WEREWOLF_DATA);
+                if (cap.isWerewolf() && cap.isTransformed()) {
+                    mc.setScreen(new RadialMenuScreen());
+                }
+            }
+        }
+
+        // Tecla V — usar habilidad seleccionada
+        if (WerewolfKeyBindings.USE_ABILITY.consumeClick()) {
+            WerewolfCapability cap = mc.player.getData(WerewolfAttachment.WEREWOLF_DATA);
+            if (cap.isWerewolf() && cap.isTransformed() && cap.getSelectedAbility() != null) {
+                if (ClientAbilityData.getCooldown(cap.getSelectedAbility()) <= 0) {
+                    PacketDistributor.sendToServer(new UseAbilityPacket(cap.getSelectedAbility()));
+                }
             }
         }
     }

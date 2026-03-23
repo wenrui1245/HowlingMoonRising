@@ -4,7 +4,6 @@ package com.howlingmoon;
 public enum WereAttribute {
 
     STRENGTH    ("attribute.strength",     5),
-    REND        ("attribute.rend",         5),
     PROTECTION  ("attribute.protection",   5),
     SPEED       ("attribute.speed",        5),
     JUMP        ("attribute.jump",         3),

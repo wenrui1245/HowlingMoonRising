@@ -13,6 +13,12 @@ public class WerewolfCapability {
     private int level = 1;
     private int experience = 0;
     private int usedAttributePoints = 0;
+    private int usedAbilityPoints = 0;
+
+    private java.util.Set<WereAbility> unlockedAbilities = java.util.EnumSet.noneOf(WereAbility.class);
+    private WereAbility selectedAbility = null;
+    private WereInclination inclination = WereInclination.NEUTRAL;
+    private java.util.Set<Integer> completedTrials = new java.util.HashSet<>();
 
     private Map<String, Integer> attributeTree = new HashMap<>();
 
@@ -34,6 +40,29 @@ public class WerewolfCapability {
     public int getUsedAttributePoints() { return usedAttributePoints; }
     public void setUsedAttributePoints(int points) { this.usedAttributePoints = points; }
 
+    public int getUsedAbilityPoints() { return usedAbilityPoints; }
+    public void setUsedAbilityPoints(int points) { this.usedAbilityPoints = points; }
+
+    public java.util.Set<WereAbility> getUnlockedAbilities() { return unlockedAbilities; }
+    public void setUnlockedAbilities(java.util.Set<WereAbility> abilities) { this.unlockedAbilities = abilities; }
+
+    public WereAbility getSelectedAbility() { return selectedAbility; }
+    public void setSelectedAbility(WereAbility ability) { this.selectedAbility = ability; }
+
+    public WereInclination getInclination() { return inclination; }
+    public void setInclination(WereInclination inclination) { this.inclination = inclination; }
+
+    public java.util.Set<Integer> getCompletedTrials() { return completedTrials; }
+    public void setCompletedTrials(java.util.Set<Integer> trials) { this.completedTrials = trials; }
+
+    public boolean hasCompletedTrialFor(int level) {
+        return completedTrials.contains(level);
+    }
+
+    public void completeTrial(int level) {
+        completedTrials.add(level);
+    }
+
     private static final int LEVEL_CAP = 20;
 
     public int expNeededForNextLevel() {
@@ -44,6 +73,11 @@ public class WerewolfCapability {
         if (!isTransformed) return;
         experience += amount;
         while (experience >= expNeededForNextLevel() && level < LEVEL_CAP) {
+            // Progression Gate: Only every 5 levels (5, 10, 15)
+            if (level % 5 == 0 && !hasCompletedTrialFor(level)) {
+                experience = Math.min(experience, expNeededForNextLevel() - 1);
+                break;
+            }
             experience -= expNeededForNextLevel();
             level++;
         }
@@ -52,8 +86,21 @@ public class WerewolfCapability {
         }
     }
 
-    public int getAvailableAttributePoints() {
-        return level - usedAttributePoints;
+    public int getAvailablePoints() {
+        return level - usedAttributePoints - usedAbilityPoints;
+    }
+
+    public boolean canUnlockAbility(WereAbility ability) {
+        return !unlockedAbilities.contains(ability) && getAvailablePoints() >= ability.getCost();
+    }
+
+    public void unlockAbility(WereAbility ability) {
+        if (!canUnlockAbility(ability)) return;
+        unlockedAbilities.add(ability);
+        usedAbilityPoints += ability.getCost();
+        if (selectedAbility == null) {
+            selectedAbility = ability;
+        }
     }
 
     public int getAttributeLevel(WereAttribute attribute) {
@@ -61,7 +108,7 @@ public class WerewolfCapability {
     }
 
     public boolean canUpgradeAttribute(WereAttribute attribute) {
-        return getAvailableAttributePoints() > 0
+        return getAvailablePoints() > 0
                 && getAttributeLevel(attribute) < attribute.getMaxLevel();
     }
 
@@ -87,6 +134,9 @@ public class WerewolfCapability {
         level = 1;
         experience = 0;
         usedAttributePoints = 0;
+        usedAbilityPoints = 0;
+        unlockedAbilities.clear();
+        selectedAbility = null;
         attributeTree.clear();
     }
 }

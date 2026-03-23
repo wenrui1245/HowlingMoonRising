@@ -34,7 +34,7 @@ public record UpgradeAttributePacket(String attributeName) implements CustomPack
 
             WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
             if (!cap.isWerewolf()) return;
-            if (cap.getAvailableAttributePoints() <= 0) return;
+            if (cap.getAvailablePoints() <= 0) return;
 
             for (WereAttribute attr : WereAttribute.values()) {
                 if (attr.name().equalsIgnoreCase(packet.attributeName())) {
@@ -43,15 +43,7 @@ public record UpgradeAttributePacket(String attributeName) implements CustomPack
                         if (cap.isTransformed()) {
                             WerewolfAttributeHandler.applyAllModifiers(player, cap);
                         }
-                        PacketDistributor.sendToPlayer(player, new SyncWerewolfPacket(
-                                cap.isWerewolf(),
-                                cap.isTransformed(),
-                                cap.getLevel(),
-                                cap.getExperience(),
-                                cap.getUsedAttributePoints(),
-                                cap.getAttributeTree(),
-                                cap.isMoonForced()
-                        ));
+                        PacketDistributor.sendToPlayer(player, SyncWerewolfPacket.fromCap(cap));
                     }
                     break;
                 }
