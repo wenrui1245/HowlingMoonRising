@@ -86,19 +86,22 @@ public class WerewolfWeaknessHandler {
     public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide()) return;
 
+        if (event.getEntity() instanceof net.minecraft.world.entity.animal.IronGolem golem) {
+            golem.targetSelector.addGoal(2, new net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal<>(golem, Player.class, true, (target) -> {
+                if (!(target instanceof ServerPlayer sp)) return false;
+                WerewolfCapability cap = sp.getData(WerewolfAttachment.WEREWOLF_DATA);
+                return cap.isWerewolf() && cap.isTransformed();
+            }));
+            return;
+        }
+
         if (event.getEntity() instanceof PathfinderMob mob
                 && !(event.getEntity() instanceof Monster)) {
 
             mob.goalSelector.addGoal(1,
-                    new AvoidEntityGoal<>(
+                    new AvoidWerewolfGoal(
                             mob,
-                            ServerPlayer.class,
-                            10.0f, 1.2, 1.5,
-                            (LivingEntity entity) -> {
-                                if (!(entity instanceof ServerPlayer sp)) return false;
-                                WerewolfCapability cap = sp.getData(WerewolfAttachment.WEREWOLF_DATA);
-                                return cap.isWerewolf() && cap.isTransformed();
-                            }
+                            10.0f, 1.0, 1.2
                     )
             );
         }
