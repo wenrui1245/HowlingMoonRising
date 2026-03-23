@@ -57,7 +57,7 @@ public class WerewolfScreen extends Screen {
                 int btnY = startY + i * rowHeight - 3;
 
                 boolean canUpgrade = cap.isWerewolf()
-                        && cap.getAvailablePoints() > 0
+                        && cap.getAvailableAttributePoints() > 0
                         && cap.canUpgradeAttribute(attr);
 
                 Button btn = Button.builder(Component.literal("+"), b -> {
@@ -90,7 +90,7 @@ public class WerewolfScreen extends Screen {
                             .bounds(btnX, btnY, 45, 12)
                             .build();
 
-                    btn.active = cap.getAvailablePoints() >= ability.getCost();
+                    btn.active = cap.getAvailableAbilityPoints() >= ability.getCost();
                     this.addRenderableWidget(btn);
                 }
             }
@@ -169,9 +169,11 @@ public class WerewolfScreen extends Screen {
         // Nivel y puntos
         gfx.drawString(this.font, "§7Level  §f" + cap.getLevel() + " §7/ 20",
                 left + 12, top + 24, COLOR_TEXT, false);
-        String pts = "Points: §f" + cap.getAvailablePoints();
+        String ptsName = currentTab == Tab.ABILITIES ? "Ability Points: " : "Attr Points: ";
+        int ptsValue = currentTab == Tab.ABILITIES ? cap.getAvailableAbilityPoints() : cap.getAvailableAttributePoints();
+        String pts = ptsName + "§f" + ptsValue;
         gfx.drawString(this.font, pts,
-                left + WIDTH - 12 - this.font.width("Points: " + cap.getAvailablePoints()) - 4,
+                left + WIDTH - 12 - this.font.width(ptsName + ptsValue) - 4,
                 top + 24, COLOR_POINTS, false);
 
         // Barra XP

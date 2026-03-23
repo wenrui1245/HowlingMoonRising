@@ -129,8 +129,9 @@ public class WerewolfCommand {
                     "§6--- Werewolf Stats ---\n" +
                             "§eLevel: §f" + cap.getLevel() + "/20\n" +
                             "§eXP: §f" + cap.getExperience() + "/" + cap.expNeededForNextLevel() + "\n" +
-                            "§eAttribute Points: §f" + cap.getAvailablePoints() + "\n" +
-                            "§eTransformed: §f" + cap.isTransformed()
+                             "§eAttribute Points: §f" + cap.getAvailableAttributePoints() + "\n" +
+                             "§eAbility Points: §f" + cap.getAvailableAbilityPoints() + "\n" +
+                             "§eTransformed: §f" + cap.isTransformed()
             ), false);
 
             for (WereAttribute attr : WereAttribute.values()) {
@@ -178,7 +179,7 @@ public class WerewolfCommand {
                 return 0;
             }
 
-            if (cap.getAvailablePoints() <= 0) {
+            if (cap.getAvailableAttributePoints() <= 0) {
                 ctx.getSource().sendFailure(Component.literal("§cNo attribute points available!"));
                 return 0;
             }
@@ -201,7 +202,7 @@ public class WerewolfCommand {
             ctx.getSource().sendSuccess(() -> Component.literal(
                     "§a" + finalFound.name() + " upgraded to level "
                             + cap.getAttributeLevel(finalFound) + "/" + finalFound.getMaxLevel()
-                            + " §7(" + cap.getAvailablePoints() + " points remaining)"
+                            + " §7(" + cap.getAvailableAttributePoints() + " points remaining)"
             ), false);
 
             return Command.SINGLE_SUCCESS;

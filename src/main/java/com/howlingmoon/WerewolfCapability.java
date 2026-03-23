@@ -86,12 +86,16 @@ public class WerewolfCapability {
         }
     }
 
-    public int getAvailablePoints() {
-        return level - usedAttributePoints - usedAbilityPoints;
+    public int getAvailableAttributePoints() {
+        return level - usedAttributePoints;
+    }
+
+    public int getAvailableAbilityPoints() {
+        return level - usedAbilityPoints;
     }
 
     public boolean canUnlockAbility(WereAbility ability) {
-        return !unlockedAbilities.contains(ability) && getAvailablePoints() >= ability.getCost();
+        return !unlockedAbilities.contains(ability) && getAvailableAbilityPoints() >= ability.getCost();
     }
 
     public void unlockAbility(WereAbility ability) {
@@ -108,7 +112,7 @@ public class WerewolfCapability {
     }
 
     public boolean canUpgradeAttribute(WereAttribute attribute) {
-        return getAvailablePoints() > 0
+        return getAvailableAttributePoints() > 0
                 && getAttributeLevel(attribute) < attribute.getMaxLevel();
     }
 
