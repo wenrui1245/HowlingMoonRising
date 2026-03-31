@@ -53,6 +53,19 @@ public class WerewolfAttachment {
                                     }
                                     cap.setAttributeTree(tree);
 
+                                    java.util.Set<Integer> completedTrials = new java.util.HashSet<>();
+                                    int[] trialsArray = tag.getIntArray("completedTrials");
+                                    for (int t : trialsArray) {
+                                        completedTrials.add(t);
+                                    }
+                                    cap.setCompletedTrials(completedTrials);
+
+                                    if (tag.contains("inclination")) {
+                                        try {
+                                            cap.setInclination(WereInclination.valueOf(tag.getString("inclination")));
+                                        } catch (IllegalArgumentException ignored) {}
+                                    }
+
                                     return cap;
                                 }
 
@@ -82,6 +95,11 @@ public class WerewolfAttachment {
                                         treeTag.putInt(entry.getKey(), entry.getValue());
                                     }
                                     tag.put("attributeTree", treeTag);
+
+                                    tag.putIntArray("completedTrials", cap.getCompletedTrials().stream().mapToInt(Integer::intValue).toArray());
+                                    if (cap.getInclination() != null) {
+                                        tag.putString("inclination", cap.getInclination().name());
+                                    }
 
                                     return tag;
                                 }

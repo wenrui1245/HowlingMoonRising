@@ -276,8 +276,10 @@ public class WerewolfAttributeHandler {
     //   CLARITY
     // =====================
 
+    private static final ThreadLocal<Boolean> IS_ADAPTING_EFFECT = ThreadLocal.withInitial(() -> false);
     @SubscribeEvent
     public static void onEffectApplied(MobEffectEvent.Applicable event) {
+        if (IS_ADAPTING_EFFECT.get()) return;
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
@@ -294,10 +296,15 @@ public class WerewolfAttributeHandler {
             if (newDuration <= 0) {
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             } else {
-                event.getEntity().addEffect(new MobEffectInstance(
-                        instance.getEffect(), newDuration,
-                        instance.getAmplifier(), instance.isAmbient(), instance.isVisible()
-                ));
+                IS_ADAPTING_EFFECT.set(true);
+                try {
+                    event.getEntity().addEffect(new MobEffectInstance(
+                            instance.getEffect(), newDuration,
+                            instance.getAmplifier(), instance.isAmbient(), instance.isVisible()
+                    ));
+                } finally {
+                    IS_ADAPTING_EFFECT.set(false);
+                }
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }
         }

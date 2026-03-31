@@ -18,12 +18,13 @@ public class WerewolfReplacedRenderer extends GeoReplacedEntityRenderer<Abstract
 
     public static AbstractClientPlayer currentPlayer = null;
 
-    private static float vanillaHeadX, vanillaHeadY;
-    private static float vanillaRightArmX, vanillaRightArmY, vanillaRightArmZ;
-    private static float vanillaLeftArmX,  vanillaLeftArmY,  vanillaLeftArmZ;
-    private static float vanillaRightLegX, vanillaRightLegY, vanillaRightLegZ;
-    private static float vanillaLeftLegX,  vanillaLeftLegY,  vanillaLeftLegZ;
-    private static float vanillaBodyX, vanillaBodyY, vanillaBodyZ;
+    // Valores crudos y limpios de Minecraft
+    private static float headX, headY, headZ;
+    private static float rightArmX, rightArmY, rightArmZ;
+    private static float leftArmX, leftArmY, leftArmZ;
+    private static float rightLegX, rightLegY, rightLegZ;
+    private static float leftLegX, leftLegY, leftLegZ;
+    private static float bodyX, bodyY, bodyZ;
 
     public WerewolfReplacedRenderer(EntityRendererProvider.Context context) {
         super(context, new WerewolfReplacedModel(), WerewolfAnimatable.getInstance());
@@ -49,28 +50,30 @@ public class WerewolfReplacedRenderer extends GeoReplacedEntityRenderer<Abstract
             model.prepareMobModel(player, walkPos, walkSpeed, partialTick);
             model.setupAnim(player, walkPos, walkSpeed, tick, headYaw, headPitch);
 
-            vanillaHeadX =  model.head.xRot;
-            vanillaHeadY = -model.head.yRot;
+            // Mapeo directo 1 a 1 de Vanilla
+            headX = model.head.xRot;
+            headY = model.head.yRot;
+            headZ = model.head.zRot;
 
-            // Con 180° flip en Y: izquierda/derecha se invierten
-            // X e Z también se invierten para que las rotaciones sean correctas
-            vanillaRightArmX = -model.leftArm.xRot;
-            vanillaRightArmY =  model.leftArm.yRot;
-            vanillaRightArmZ = -model.leftArm.zRot;
-            vanillaLeftArmX  = -model.rightArm.xRot;
-            vanillaLeftArmY  =  model.rightArm.yRot;
-            vanillaLeftArmZ  = -model.rightArm.zRot;
+            rightArmX = model.rightArm.xRot;
+            rightArmY = model.rightArm.yRot;
+            rightArmZ = model.rightArm.zRot;
 
-            vanillaRightLegX = -model.leftLeg.xRot;
-            vanillaRightLegY =  model.leftLeg.yRot;
-            vanillaRightLegZ = -model.leftLeg.zRot;
-            vanillaLeftLegX  = -model.rightLeg.xRot;
-            vanillaLeftLegY  =  model.rightLeg.yRot;
-            vanillaLeftLegZ  = -model.rightLeg.zRot;
+            leftArmX = model.leftArm.xRot;
+            leftArmY = model.leftArm.yRot;
+            leftArmZ = model.leftArm.zRot;
 
-            vanillaBodyX = model.body.xRot;
-            vanillaBodyY = model.body.yRot;
-            vanillaBodyZ = model.body.zRot;
+            rightLegX = model.rightLeg.xRot;
+            rightLegY = model.rightLeg.yRot;
+            rightLegZ = model.rightLeg.zRot;
+
+            leftLegX = model.leftLeg.xRot;
+            leftLegY = model.leftLeg.yRot;
+            leftLegZ = model.leftLeg.zRot;
+
+            bodyX = model.body.xRot;
+            bodyY = model.body.yRot;
+            bodyZ = model.body.zRot;
         }
     }
 
@@ -81,33 +84,34 @@ public class WerewolfReplacedRenderer extends GeoReplacedEntityRenderer<Abstract
 
         switch (bone.getName()) {
             case "head_22" -> {
-                bone.setRotX(vanillaHeadX);
-                bone.setRotY(vanillaHeadY);
-            }
-            case "left_arm_43" -> {
-                bone.setRotX(vanillaLeftArmX);
-                bone.setRotY(vanillaLeftArmY);
-                bone.setRotZ(vanillaLeftArmZ);
+                bone.setRotX(headX);
+                bone.setRotY(headY);
+                bone.setRotZ(headZ);
             }
             case "right_arm_54" -> {
-                bone.setRotX(vanillaRightArmX);
-                bone.setRotY(vanillaRightArmY);
-                bone.setRotZ(vanillaRightArmZ);
+                bone.setRotX(rightArmX);
+                bone.setRotY(rightArmY);
+                bone.setRotZ(rightArmZ);
             }
-            case "left_leg_65" -> {
-                bone.setRotX(vanillaLeftLegX);
-                bone.setRotY(vanillaLeftLegY);
-                bone.setRotZ(vanillaLeftLegZ);
+            case "left_arm_43" -> {
+                bone.setRotX(leftArmX);
+                bone.setRotY(leftArmY);
+                bone.setRotZ(leftArmZ);
             }
             case "right_leg_76" -> {
-                bone.setRotX(vanillaRightLegX);
-                bone.setRotY(vanillaRightLegY);
-                bone.setRotZ(vanillaRightLegZ);
+                bone.setRotX(rightLegX);
+                bone.setRotY(rightLegY);
+                bone.setRotZ(rightLegZ);
+            }
+            case "left_leg_65" -> {
+                bone.setRotX(leftLegX);
+                bone.setRotY(leftLegY);
+                bone.setRotZ(leftLegZ);
             }
             case "body_32" -> {
-                bone.setRotX(vanillaBodyX);
-                bone.setRotY(vanillaBodyY);
-                bone.setRotZ(vanillaBodyZ);
+                bone.setRotX(bodyX);
+                bone.setRotY(bodyY);
+                bone.setRotZ(bodyZ);
             }
         }
 

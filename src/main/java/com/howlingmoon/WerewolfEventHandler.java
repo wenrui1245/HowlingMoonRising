@@ -56,6 +56,8 @@ public class WerewolfEventHandler {
             newCap.setUnlockedAbilities(new java.util.HashSet<>(oldCap.getUnlockedAbilities()));
             newCap.setSelectedAbility(oldCap.getSelectedAbility());
             newCap.setAttributeTree(new java.util.HashMap<>(oldCap.getAttributeTree()));
+            newCap.setInclination(oldCap.getInclination());
+            newCap.setCompletedTrials(new java.util.HashSet<>(oldCap.getCompletedTrials()));
         }
     }
 

@@ -4,9 +4,7 @@
   "package": "com.howlingmoon.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
-  "client": [
-    "PlayerSkinMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }

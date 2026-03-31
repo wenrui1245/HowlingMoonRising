@@ -12,13 +12,13 @@
       "projectName": "HowlingMoonRising",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\marco\\Desktop\\MDK-1.21.1-ModDevGradle-main\\HowlingMoonRising\\build\\moddev\\clientRunProgramArgs.txt"
+        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/clientRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\marco\\Desktop\\MDK-1.21.1-ModDevGradle-main\\HowlingMoonRising\\build\\moddev\\clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dhowlingmoonrising%%C:\\Users\\marco\\Desktop\\MDK-1.21.1-ModDevGradle-main\\HowlingMoonRising\\bin\\main"
+        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dhowlingmoonrising%%/var/home/blancopolo/HowlingMoonRising/bin/main"
       ],
-      "cwd": "${workspaceFolder}\\run",
+      "cwd": "${workspaceFolder}/run",
       "env": {},
       "console": "internalConsole",
       "shortenCommandLine": "none"
@@ -34,13 +34,13 @@
       "projectName": "HowlingMoonRising",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\marco\\Desktop\\MDK-1.21.1-ModDevGradle-main\\HowlingMoonRising\\build\\moddev\\dataRunProgramArgs.txt"
+        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/dataRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\marco\\Desktop\\MDK-1.21.1-ModDevGradle-main\\HowlingMoonRising\\build\\moddev\\dataRunVmArgs.txt",
-        "-Dfml.modFolders\u003dhowlingmoonrising%%C:\\Users\\marco\\Desktop\\MDK-1.21.1-ModDevGradle-main\\HowlingMoonRising\\bin\\main"
+        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dhowlingmoonrising%%/var/home/blancopolo/HowlingMoonRising/bin/main"
       ],
-      "cwd": "${workspaceFolder}\\run",
+      "cwd": "${workspaceFolder}/run",
       "env": {},
       "console": "internalConsole",
       "shortenCommandLine": "none"
@@ -56,13 +56,13 @@
       "projectName": "HowlingMoonRising",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\marco\\Desktop\\MDK-1.21.1-ModDevGradle-main\\HowlingMoonRising\\build\\moddev\\gameTestServerRunProgramArgs.txt"
+        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/gameTestServerRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\marco\\Desktop\\MDK-1.21.1-ModDevGradle-main\\HowlingMoonRising\\build\\moddev\\gameTestServerRunVmArgs.txt",
-        "-Dfml.modFolders\u003dhowlingmoonrising%%C:\\Users\\marco\\Desktop\\MDK-1.21.1-ModDevGradle-main\\HowlingMoonRising\\bin\\main"
+        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/gameTestServerRunVmArgs.txt",
+        "-Dfml.modFolders\u003dhowlingmoonrising%%/var/home/blancopolo/HowlingMoonRising/bin/main"
       ],
-      "cwd": "${workspaceFolder}\\run",
+      "cwd": "${workspaceFolder}/run",
       "env": {},
       "console": "internalConsole",
       "shortenCommandLine": "none"
@@ -78,13 +78,13 @@
       "projectName": "HowlingMoonRising",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\marco\\Desktop\\MDK-1.21.1-ModDevGradle-main\\HowlingMoonRising\\build\\moddev\\serverRunProgramArgs.txt"
+        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/serverRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\marco\\Desktop\\MDK-1.21.1-ModDevGradle-main\\HowlingMoonRising\\build\\moddev\\serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dhowlingmoonrising%%C:\\Users\\marco\\Desktop\\MDK-1.21.1-ModDevGradle-main\\HowlingMoonRising\\bin\\main"
+        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dhowlingmoonrising%%/var/home/blancopolo/HowlingMoonRising/bin/main"
       ],
-      "cwd": "${workspaceFolder}\\run",
+      "cwd": "${workspaceFolder}/run",
       "env": {},
       "console": "internalConsole",
       "shortenCommandLine": "none"

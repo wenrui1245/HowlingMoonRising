@@ -21,6 +21,9 @@ public class WerewolfCapability {
     private java.util.Set<Integer> completedTrials = new java.util.HashSet<>();
 
     private Map<String, Integer> attributeTree = new HashMap<>();
+    
+    // NUEVO: Cooldowns locales del jugador para evitar Memory Leaks
+    private Map<WereAbility, Integer> cooldowns = new HashMap<>();
 
     public boolean isWerewolf() { return isWerewolf; }
     public void setWerewolf(boolean werewolf) { isWerewolf = werewolf; }
@@ -131,6 +134,34 @@ public class WerewolfCapability {
         usedAttributePoints = 0;
     }
 
+    // --- MÉTODOS DE COOLDOWN ---
+    public void setCooldown(WereAbility ability, int ticks) {
+        if (ticks <= 0) {
+            cooldowns.remove(ability);
+        } else {
+            cooldowns.put(ability, ticks);
+        }
+    }
+
+    public int getCooldown(WereAbility ability) {
+        return cooldowns.getOrDefault(ability, 0);
+    }
+
+    public void tickCooldowns() {
+        if (cooldowns.isEmpty()) return;
+        cooldowns.entrySet().removeIf(entry -> {
+            int timeLeft = entry.getValue() - 1;
+            if (timeLeft <= 0) return true;
+            entry.setValue(timeLeft);
+            return false;
+        });
+    }
+
+    public Map<WereAbility, Integer> getCooldowns() {
+        return cooldowns;
+    }
+    // ---------------------------
+
     public void reset() {
         isWerewolf = false;
         isTransformed = false;
@@ -142,5 +173,6 @@ public class WerewolfCapability {
         unlockedAbilities.clear();
         selectedAbility = null;
         attributeTree.clear();
+        cooldowns.clear();
     }
 }

@@ -1,3 +1,4 @@
+// Copyright (c) 2026 mareca1202. All Rights Reserved.
 package com.howlingmoon;
 
 import net.minecraft.core.registries.Registries;
@@ -132,8 +133,13 @@ public class WerewolfWeaknessHandler {
             ItemStack armor = player.getItemBySlot(slot);
             if (armor.isEmpty()) continue;
 
+            // Intentamos añadir la armadura al inventario
             if (!player.getInventory().add(armor.copy())) {
-                player.drop(armor.copy(), false);
+                // Si el inventario está lleno, la soltamos en el mundo
+                net.minecraft.world.entity.item.ItemEntity drop = player.drop(armor.copy(), false);
+                if (drop != null) {
+                    drop.setPickUpDelay(40); // Añadimos 2 segundos de delay para que no la recoja al instante
+                }
             }
             player.setItemSlot(slot, ItemStack.EMPTY);
 
