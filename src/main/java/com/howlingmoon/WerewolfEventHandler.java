@@ -17,12 +17,13 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class WerewolfEventHandler {
 
     // =====================
-    //   LOGIN / RESPAWN
+    // LOGIN / RESPAWN
     // =====================
 
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (!(event.getEntity() instanceof ServerPlayer player))
+            return;
         syncToClient(player);
         WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
         if (cap.isTransformed()) {
@@ -32,7 +33,8 @@ public class WerewolfEventHandler {
 
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (!(event.getEntity() instanceof ServerPlayer player))
+            return;
         syncToClient(player);
         WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
         if (cap.isTransformed()) {
@@ -62,20 +64,28 @@ public class WerewolfEventHandler {
     }
 
     // =====================
-    //   LUNA LLENA
+    // LUNA LLENA Y COOLDOWNS
     // =====================
 
     @SubscribeEvent
     public static void onPlayerTickMoon(PlayerTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        if (player.level().isClientSide()) return;
-
-        if (player.tickCount % 20 != 0) return;
+        if (!(event.getEntity() instanceof ServerPlayer player))
+            return;
+        if (player.level().isClientSide())
+            return;
 
         WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
-        if (!cap.isWerewolf()) return;
+        if (!cap.isWerewolf())
+            return;
 
+        // CORRECCIÓN: Esto debe ejecutarse CADA TICK para que 600 ticks sean 30
+        // segundos
         WerewolfAbilityHandler.tick(player);
+
+        // A partir de aquí, el código solo corre 1 vez por segundo para ahorrar
+        // rendimiento
+        if (player.tickCount % 20 != 0)
+            return;
 
         long dayTime = player.level().getDayTime() % 24000;
         boolean isNight = dayTime >= 13000 && dayTime <= 23000;
@@ -89,17 +99,13 @@ public class WerewolfEventHandler {
             syncToClient(player);
             player.sendSystemMessage(
                     net.minecraft.network.chat.Component.literal(
-                            "§c☾ The full moon rises... the beast takes control!"
-                    )
-            );
+                            "§c☾ The full moon rises... the beast takes control!"));
         } else if (shouldBeForced && cap.isTransformed() && !cap.isMoonForced()) {
             cap.setMoonForced(true);
             syncToClient(player);
             player.sendSystemMessage(
                     net.minecraft.network.chat.Component.literal(
-                            "§c☾ The full moon rises... you cannot return to human form!"
-                    )
-            );
+                            "§c☾ The full moon rises... you cannot return to human form!"));
         } else if (!shouldBeForced && cap.isMoonForced()) {
             cap.setTransformed(false);
             cap.setMoonForced(false);
@@ -107,23 +113,24 @@ public class WerewolfEventHandler {
             syncToClient(player);
             player.sendSystemMessage(
                     net.minecraft.network.chat.Component.literal(
-                            "§7The moon sets... you return to yourself."
-                    )
-            );
+                            "§7The moon sets... you return to yourself."));
         }
     }
 
     // =====================
-    //   XP AL MATAR
+    // XP AL MATAR
     // =====================
 
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
-        if (event.getEntity().level().isClientSide()) return;
-        if (!(event.getSource().getEntity() instanceof ServerPlayer player)) return;
+        if (event.getEntity().level().isClientSide())
+            return;
+        if (!(event.getSource().getEntity() instanceof ServerPlayer player))
+            return;
 
         WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
-        if (!cap.isWerewolf() || !cap.isTransformed()) return;
+        if (!cap.isWerewolf() || !cap.isTransformed())
+            return;
 
         LivingEntity killed = event.getEntity();
         int xpGained = 0;
@@ -136,7 +143,8 @@ public class WerewolfEventHandler {
             xpGained = 5;
         }
 
-        if (xpGained <= 0) return;
+        if (xpGained <= 0)
+            return;
 
         if (cap.getInclination() == WereInclination.PREDATOR) {
             xpGained = (int) (xpGained * 1.5);
@@ -149,9 +157,7 @@ public class WerewolfEventHandler {
         if (levelAfter > levelBefore) {
             player.sendSystemMessage(
                     net.minecraft.network.chat.Component.literal(
-                            "§6⚠ The beast grows stronger! Level " + levelAfter
-                    )
-            );
+                            "§6⚠ The beast grows stronger! Level " + levelAfter));
         }
 
         syncToClient(player);
@@ -159,10 +165,12 @@ public class WerewolfEventHandler {
 
     @SubscribeEvent
     public static void onPlayerTickClimb(PlayerTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (!(event.getEntity() instanceof ServerPlayer player))
+            return;
 
         WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
-        if (!cap.isWerewolf() || !cap.isTransformed() || !cap.getUnlockedAbilities().contains(WereAbility.CLIMB)) return;
+        if (!cap.isWerewolf() || !cap.isTransformed() || !cap.getUnlockedAbilities().contains(WereAbility.CLIMB))
+            return;
 
         if (player.horizontalCollision && !player.onGround()) {
             net.minecraft.world.phys.Vec3 delta = player.getDeltaMovement();
@@ -180,11 +188,14 @@ public class WerewolfEventHandler {
 
     @SubscribeEvent
     public static void onPlayerWakeUp(net.neoforged.neoforge.event.entity.player.PlayerWakeUpEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        if (player.level().isClientSide()) return;
+        if (!(event.getEntity() instanceof ServerPlayer player))
+            return;
+        if (player.level().isClientSide())
+            return;
 
         WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
-        if (!cap.isWerewolf()) return;
+        if (!cap.isWerewolf())
+            return;
 
         int level = cap.getLevel();
         if (level % 5 == 0 && !cap.hasCompletedTrialFor(level)) {
@@ -197,22 +208,18 @@ public class WerewolfEventHandler {
                     syncToClient(player);
                     player.sendSystemMessage(
                             net.minecraft.network.chat.Component.literal(
-                                    "§d✨ The Moon Pearl resonates... your path forward is clear!"
-                            )
-                    );
+                                    "§d✨ The Moon Pearl resonates... your path forward is clear!"));
                     return;
                 }
             }
             player.sendSystemMessage(
                     net.minecraft.network.chat.Component.literal(
-                            "§5⚠ Your progress is stalled. You feel a pull towards a Moon Pearl..."
-                    )
-            );
+                            "§5⚠ Your progress is stalled. You feel a pull towards a Moon Pearl..."));
         }
     }
 
     // =====================
-    //   HELPER
+    // HELPER
     // =====================
 
     private static void syncToClient(ServerPlayer player) {

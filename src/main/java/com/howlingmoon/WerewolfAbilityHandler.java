@@ -21,12 +21,15 @@ public class WerewolfAbilityHandler {
     }
 
     public static void handleAbilityUse(ServerPlayer player, WereAbility ability) {
-        if (player == null || ability == null) return;
+        if (player == null || ability == null)
+            return;
 
         WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
-        if (!cap.isTransformed() || !cap.getUnlockedAbilities().contains(ability)) return;
+        if (!cap.isTransformed() || !cap.getUnlockedAbilities().contains(ability))
+            return;
 
-        if (isOnCooldown(player, ability)) return;
+        if (isOnCooldown(player, ability))
+            return;
 
         boolean success = executeAbility(player, ability);
 
@@ -38,9 +41,9 @@ public class WerewolfAbilityHandler {
     private static boolean executeAbility(ServerPlayer player, WereAbility ability) {
         switch (ability) {
             case HOWL -> {
-                player.level().playSound(null, player.getX(), player.getY(), player.getZ(), 
+                player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                         HMSounds.HOWL.get(), player.getSoundSource(), 1.0F, 1.0F);
-                
+
                 AABB area = player.getBoundingBox().inflate(10);
                 player.level().getEntitiesOfClass(LivingEntity.class, area, e -> e != player).forEach(e -> {
                     e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 1));
@@ -55,7 +58,6 @@ public class WerewolfAbilityHandler {
                 return true;
             }
             case BITE -> {
-                // MEJORADO: Raycast preciso (alcance de 3 bloques)
                 LivingEntity target = getTargetInFront(player, 3.0D);
                 if (target != null) {
                     target.hurt(player.damageSources().mobAttack(player), 10.0F);
@@ -73,6 +75,15 @@ public class WerewolfAbilityHandler {
                 }
                 return true;
             }
+            case SCENT_TRACKING -> {
+                if (player.hasEffect(MobEffects.LUCK)) {
+                    player.removeEffect(MobEffects.LUCK);
+                    return false;
+                } else {
+                    player.addEffect(new MobEffectInstance(MobEffects.LUCK, 600, 0, false, false, false));
+                    return true;
+                }
+            }
             case RAM -> {
                 Vec3 look = player.getLookAngle();
                 player.setDeltaMovement(look.x * 2.0, 0.2, look.z * 2.0);
@@ -80,7 +91,6 @@ public class WerewolfAbilityHandler {
                 return true;
             }
             case MAIM -> {
-                // MEJORADO: Raycast preciso
                 LivingEntity target = getTargetInFront(player, 3.0D);
                 if (target != null) {
                     target.hurt(player.damageSources().mobAttack(player), 12.0F);
@@ -89,13 +99,6 @@ public class WerewolfAbilityHandler {
                     return true;
                 }
                 return false;
-            }
-            case SCENT_TRACKING -> {
-                AABB area = player.getBoundingBox().inflate(32);
-                player.level().getEntitiesOfClass(LivingEntity.class, area, e -> e != player).forEach(e -> {
-                    e.addEffect(new MobEffectInstance(MobEffects.GLOWING, 200, 0, false, false));
-                });
-                return true;
             }
             case LIFT -> {
                 LivingEntity target = getTargetInFront(player, 3.0D);
@@ -111,7 +114,7 @@ public class WerewolfAbilityHandler {
                 AABB area = player.getBoundingBox().inflate(3);
                 player.level().getEntitiesOfClass(LivingEntity.class, area, e -> e != player).forEach(e -> {
                     e.hurt(player.damageSources().mobAttack(player), 4.0F);
-                    e.invulnerableTime = 0; 
+                    e.invulnerableTime = 0;
                 });
                 return true;
             }
@@ -135,7 +138,6 @@ public class WerewolfAbilityHandler {
         }
     }
 
-    // NUEVO: Método helper para Raycasting preciso
     private static LivingEntity getTargetInFront(ServerPlayer player, double reach) {
         Vec3 eyePos = player.getEyePosition();
         Vec3 look = player.getLookAngle();
@@ -143,9 +145,8 @@ public class WerewolfAbilityHandler {
         AABB box = player.getBoundingBox().expandTowards(look.scale(reach)).inflate(1.0D);
 
         EntityHitResult hitResult = ProjectileUtil.getEntityHitResult(
-                player.level(), player, eyePos, reachVec, box, 
-                entity -> !entity.isSpectator() && entity.isPickable() && entity instanceof LivingEntity
-        );
+                player.level(), player, eyePos, reachVec, box,
+                entity -> !entity.isSpectator() && entity.isPickable() && entity instanceof LivingEntity);
 
         if (hitResult != null && hitResult.getType() == HitResult.Type.ENTITY) {
             return (LivingEntity) hitResult.getEntity();

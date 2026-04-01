@@ -15,7 +15,7 @@ public enum WereAbility implements StringRepresentable {
     RAM("ram", "Ram", "Charge into enemies, knocking them back.", 2, 120),
     LIFT("lift", "Lift", "Pick up and throw smaller entities.", 3, 200),
     NIGHT_VISION("night_vision", "Night Vision", "See clearly in the dark.", 1, 0),
-    SCENT_TRACKING("scent_tracking", "Scent Tracking", "Visualize the scent trails of nearby creatures.", 2, 0);
+    SCENT_TRACKING("scent_tracking", "Scent Tracking", "Visualize the scent trails of nearby creatures.", 2, 600);
 
     private final String name;
     private final String displayName;

@@ -18,7 +18,6 @@ public class WerewolfReplacedRenderer extends GeoReplacedEntityRenderer<Abstract
 
     public static AbstractClientPlayer currentPlayer = null;
 
-    // Valores crudos y limpios de Minecraft
     private static float headX, headY, headZ;
     private static float rightArmX, rightArmY, rightArmZ;
     private static float leftArmX, leftArmY, leftArmZ;
@@ -37,22 +36,31 @@ public class WerewolfReplacedRenderer extends GeoReplacedEntityRenderer<Abstract
         if (vanillaRenderer instanceof PlayerRenderer playerRenderer) {
             PlayerModel<AbstractClientPlayer> model = playerRenderer.getModel();
 
-            float walkPos   = player.walkAnimation.position(partialTick);
+            float walkPos = player.walkAnimation.position(partialTick);
             float walkSpeed = player.walkAnimation.speed(partialTick);
-            float tick      = player.tickCount + partialTick;
-            float headYaw   = Mth.clamp(
-                    Mth.lerp(partialTick, player.yHeadRotO, player.yHeadRot)
-                            - Mth.lerp(partialTick, player.yBodyRotO, player.yBodyRot),
-                    -45f, 45f);
-            float headPitch = player.getXRot();
+            float tick = player.tickCount + partialTick;
+
+            // --- CÁLCULO MEJORADO DE LA CABEZA ---
+            // En lugar de confiar en el model.head.yRot que Vanilla a veces trunca,
+            // calculamos el ángulo de giro real de la cabeza respecto al cuerpo.
+            float headYaw = Mth.lerp(partialTick, player.yHeadRotO, player.yHeadRot);
+            float bodyYaw = Mth.lerp(partialTick, player.yBodyRotO, player.yBodyRot);
+            float netHeadYaw = Mth.wrapDegrees(headYaw - bodyYaw); // Diferencia real
+
+            // Forzamos el clamp normal del cuerpo humano (aprox 50 grados maximo a cada
+            // lado)
+            netHeadYaw = Mth.clamp(netHeadYaw, -50.0f, 50.0f);
+
+            float headPitch = Mth.lerp(partialTick, player.xRotO, player.getXRot());
 
             model.attackTime = player.getAttackAnim(partialTick);
             model.prepareMobModel(player, walkPos, walkSpeed, partialTick);
-            model.setupAnim(player, walkPos, walkSpeed, tick, headYaw, headPitch);
+            model.setupAnim(player, walkPos, walkSpeed, tick, netHeadYaw, headPitch);
 
-            // Mapeo directo 1 a 1 de Vanilla
-            headX = model.head.xRot;
-            headY = model.head.yRot;
+            // X es pitch (arriba/abajo), Y es yaw (izquierda/derecha).
+            // Usamos nuestras variables crudas en Radianes.
+            headX = headPitch * ((float) Math.PI / 180F);
+            headY = netHeadYaw * ((float) Math.PI / 180F);
             headZ = model.head.zRot;
 
             rightArmX = model.rightArm.xRot;
@@ -79,38 +87,40 @@ public class WerewolfReplacedRenderer extends GeoReplacedEntityRenderer<Abstract
 
     @Override
     public void applyRenderLayersForBone(PoseStack poseStack, WerewolfAnimatable animatable,
-                                         GeoBone bone, RenderType renderType, MultiBufferSource bufferSource,
-                                         VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+            GeoBone bone, RenderType renderType, MultiBufferSource bufferSource,
+            VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
 
         switch (bone.getName()) {
             case "head_22" -> {
-                bone.setRotX(headX);
-                bone.setRotY(headY);
+                bone.setRotX(-headX);
+                // ATENCIÓN AQUÍ: Al haber calculado netHeadYaw puro, solo necesitamos el signo
+                // correcto
+                bone.setRotY(-headY);
                 bone.setRotZ(headZ);
             }
-            case "right_arm_54" -> {
-                bone.setRotX(rightArmX);
-                bone.setRotY(rightArmY);
-                bone.setRotZ(rightArmZ);
-            }
             case "left_arm_43" -> {
-                bone.setRotX(leftArmX);
-                bone.setRotY(leftArmY);
-                bone.setRotZ(leftArmZ);
+                bone.setRotX(-rightArmX);
+                bone.setRotY(-rightArmY);
+                bone.setRotZ(-rightArmZ);
             }
-            case "right_leg_76" -> {
-                bone.setRotX(rightLegX);
-                bone.setRotY(rightLegY);
-                bone.setRotZ(rightLegZ);
+            case "right_arm_54" -> {
+                bone.setRotX(-leftArmX);
+                bone.setRotY(-leftArmY);
+                bone.setRotZ(-leftArmZ);
             }
             case "left_leg_65" -> {
-                bone.setRotX(leftLegX);
-                bone.setRotY(leftLegY);
-                bone.setRotZ(leftLegZ);
+                bone.setRotX(-rightLegX);
+                bone.setRotY(-rightLegY);
+                bone.setRotZ(-rightLegZ);
+            }
+            case "right_leg_76" -> {
+                bone.setRotX(-leftLegX);
+                bone.setRotY(-leftLegY);
+                bone.setRotZ(-leftLegZ);
             }
             case "body_32" -> {
-                bone.setRotX(bodyX);
-                bone.setRotY(bodyY);
+                bone.setRotX(-bodyX);
+                bone.setRotY(-bodyY);
                 bone.setRotZ(bodyZ);
             }
         }
