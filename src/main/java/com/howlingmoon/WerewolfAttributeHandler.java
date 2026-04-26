@@ -42,8 +42,6 @@ public class WerewolfAttributeHandler {
             "were_protection");
     private static final ResourceLocation RL_SPEED = ResourceLocation.fromNamespaceAndPath(HowlingMoon.MODID,
             "were_speed");
-    private static final ResourceLocation RL_KNOCKBACK = ResourceLocation.fromNamespaceAndPath(HowlingMoon.MODID,
-            "were_knockback");
     private static final ResourceLocation RL_KNOCKRESIST = ResourceLocation.fromNamespaceAndPath(HowlingMoon.MODID,
             "were_knockresist");
     private static final ResourceLocation RL_JUMP = ResourceLocation.fromNamespaceAndPath(HowlingMoon.MODID,
@@ -222,7 +220,7 @@ public class WerewolfAttributeHandler {
         ItemStack stack = event.getItem();
         if (stack.get(DataComponents.FOOD) != null && !MEAT_FOODS.contains(stack.getItem())) {
             event.setCanceled(true);
-            player.displayClientMessage(Component.literal("§cThe beast demands flesh."), true);
+            player.displayClientMessage(Component.translatable("message.howlingmoonrising.beast_demands_flesh").withStyle(net.minecraft.ChatFormatting.RED), true);
         }
     }
 
@@ -281,7 +279,6 @@ public class WerewolfAttributeHandler {
     public static void removeAllModifiers(ServerPlayer player) {
         remMod(player, Attributes.ARMOR, RL_PROTECTION);
         remMod(player, Attributes.MOVEMENT_SPEED, RL_SPEED);
-        remMod(player, Attributes.ATTACK_KNOCKBACK, RL_KNOCKBACK);
         remMod(player, Attributes.KNOCKBACK_RESISTANCE, RL_KNOCKRESIST);
         remMod(player, Attributes.JUMP_STRENGTH, RL_JUMP);
         remMod(player, Attributes.SCALE, RL_SCALE);

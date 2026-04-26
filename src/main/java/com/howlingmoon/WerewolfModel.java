@@ -8,16 +8,16 @@ public class WerewolfModel extends GeoModel<WerewolfEntity> {
 
     @Override
     public ResourceLocation getModelResource(WerewolfEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(HowlingMoon.MODID, "geo/werewolf.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(HowlingMoon.MODID, "geo/werewolf_npc.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(WerewolfEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(HowlingMoon.MODID, "textures/entity/werewolf.png");
+        return ResourceLocation.fromNamespaceAndPath(HowlingMoon.MODID, "textures/entity/werewolf_npc.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(WerewolfEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(HowlingMoon.MODID, "animations/werewolf.animation.json");
+        return ResourceLocation.fromNamespaceAndPath(HowlingMoon.MODID, "animations/werewolf_npc.animation.json");
     }
 }

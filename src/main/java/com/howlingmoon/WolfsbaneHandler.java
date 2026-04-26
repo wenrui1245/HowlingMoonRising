@@ -24,8 +24,7 @@ public class WolfsbaneHandler {
 
         // Chequea si es lobo O si está infectado para poder curarse
         if (!cap.isWerewolf() && !cap.isInfected()) {
-            player.sendSystemMessage(
-                    net.minecraft.network.chat.Component.literal("§7The potion has no effect on your human blood."));
+            player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.human_blood").withStyle(net.minecraft.ChatFormatting.GRAY));
             return;
         }
 
@@ -43,8 +42,6 @@ public class WolfsbaneHandler {
         // 4. Sincronizar los cambios con el cliente de forma inmediata
         PacketDistributor.sendToPlayer(player, SyncWerewolfPacket.fromCap(cap));
 
-        player.sendSystemMessage(
-                net.minecraft.network.chat.Component.literal(
-                        "§aThe wolfsbane purifies your blood... the curse has been lifted."));
+        player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.purifies_blood").withStyle(net.minecraft.ChatFormatting.GREEN));
     }
 }

@@ -1,5 +1,5 @@
 {
-  "itemGroup.howlingmoonrising": "Howling Moon Rising",
+  "itemGroup.howlingmoon": "Howling Moon Rising",
   "item.howlingmoonrising.moon_pearl": "Moon Pearl",
   "item.howlingmoonrising.silver_ingot": "Silver Ingot",
   "item.howlingmoonrising.wolfsbane_potion": "Wolfsbane Potion",
@@ -23,5 +23,23 @@
   "attribute.regeneration": "Regeneration",
   "attribute.clarity": "Clarity",
   "attribute.exhilarating": "Exhilaration",
-  "attribute.resistance": "Toughness"
+  "attribute.resistance": "Toughness",
+  "message.howlingmoonrising.curse_awakened": "Your blood boils... THE CURSE HAS AWAKENED!",
+  "message.howlingmoonrising.full_moon": "☾ The full moon rises... the beast takes control!",
+  "message.howlingmoonrising.moon_sets": "The moon sets... you return to yourself.",
+  "message.howlingmoonrising.bite_strange": "[⚠] The wolf's bite feels strange... your veins burn.",
+  "message.howlingmoonrising.pearl_resonates": "✨ The Moon Pearl resonates... your path forward is clear!",
+  "message.howlingmoonrising.beast_demands_flesh": "The beast demands flesh.",
+  "message.howlingmoonrising.human_blood": "The potion has no effect on your human blood.",
+  "message.howlingmoonrising.purifies_blood": "The wolfsbane purifies your blood... the curse has been lifted.",
+  "message.howlingmoonrising.zen_reset": "✨ Zen Reset!",
+  "message.howlingmoonrising.claws_retracted": "Claws retracted.",
+  "message.howlingmoonrising.claws_extended": "Claws extended!",
+  "message.howlingmoonrising.debug_moon_forced": "[Debug] Transformation failed: The full moon forces you to remain a beast!",
+  "message.howlingmoonrising.will_not_rest": "The beast within will not rest...",
+  "message.howlingmoonrising.rejects_armor": "The beast rejects your armor!",
+  "item.howlingmoonrising.werewolf_spawn_egg": "Werewolf Spawn Egg",
+  "entity.howlingmoonrising.werewolf": "Werewolf",
+  "item.howlingmoonrising.hunter_spawn_egg": "Hunter Spawn Egg",
+  "entity.howlingmoonrising.hunter": "Hunter"
 }

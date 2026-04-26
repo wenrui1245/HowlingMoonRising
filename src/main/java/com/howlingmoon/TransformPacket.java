@@ -40,8 +40,7 @@ public record TransformPacket() implements CustomPacketPayload {
                 boolean isNight = dayTime >= 13000 && dayTime <= 23000;
                 boolean isFullMoon = player.level().getMoonPhase() == 0;
                 if (isNight && isFullMoon) {
-                    player.sendSystemMessage(
-                            net.minecraft.network.chat.Component.literal("§cThe moon will not let you go..."));
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.debug_moon_forced").withStyle(net.minecraft.ChatFormatting.RED));
                     return;
                 }
             }

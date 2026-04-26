@@ -28,4 +28,16 @@ public class HMItems {
                             SwordItem.createAttributes(Tiers.IRON, 3, -2.4f)
                     )
             ));
+
+    public static final DeferredItem<CustomSpawnEggItem> WEREWOLF_SPAWN_EGG =
+            ITEMS.register("werewolf_spawn_egg", () -> new CustomSpawnEggItem(
+                    HMEntities.WEREWOLF,
+                    new Item.Properties()
+            ));
+
+    public static final DeferredItem<CustomSpawnEggItem> HUNTER_SPAWN_EGG =
+            ITEMS.register("hunter_spawn_egg", () -> new CustomSpawnEggItem(
+                    HMEntities.HUNTER,
+                    new Item.Properties()
+            ));
 }

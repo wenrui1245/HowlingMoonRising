@@ -67,7 +67,7 @@ public class WerewolfEventHandler {
             playTransformEffects(player, true);
             syncToClient(player);
             player.sendSystemMessage(
-                    net.minecraft.network.chat.Component.literal("§5Your blood boils... THE CURSE HAS AWAKENED!"));
+                    net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.curse_awakened").withStyle(net.minecraft.ChatFormatting.DARK_PURPLE));
             return;
         }
 
@@ -90,8 +90,7 @@ public class WerewolfEventHandler {
                 WerewolfAttributeHandler.applyAllModifiers(player, cap);
                 playTransformEffects(player, true);
                 syncToClient(player);
-                player.sendSystemMessage(net.minecraft.network.chat.Component
-                        .literal("§c☾ The full moon rises... the beast takes control!"));
+                player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.full_moon").withStyle(net.minecraft.ChatFormatting.RED));
             } else if (shouldBeForced && cap.isTransformed() && !cap.isMoonForced()) {
                 cap.setMoonForced(true);
                 syncToClient(player);
@@ -101,8 +100,7 @@ public class WerewolfEventHandler {
                 WerewolfAttributeHandler.removeAllModifiers(player);
                 playTransformEffects(player, false);
                 syncToClient(player);
-                player.sendSystemMessage(
-                        net.minecraft.network.chat.Component.literal("§7The moon sets... you return to yourself."));
+                player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.moon_sets").withStyle(net.minecraft.ChatFormatting.GRAY));
             }
         }
     }
@@ -128,8 +126,7 @@ public class WerewolfEventHandler {
                 player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 160, 0));
                 player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                         HMSounds.HEARTBEAT.get(), SoundSource.PLAYERS, 2.0F, 1.0F);
-                player.sendSystemMessage(net.minecraft.network.chat.Component
-                        .literal("§8[§5⚠§8] §dThe wolf's bite feels strange... your veins burn."));
+                player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.bite_strange").withStyle(net.minecraft.ChatFormatting.LIGHT_PURPLE));
                 syncToClient(player);
             }
         }
@@ -246,8 +243,7 @@ public class WerewolfEventHandler {
                     player.getInventory().getItem(i).shrink(1);
                     cap.completeTrial(level);
                     syncToClient(player);
-                    player.sendSystemMessage(net.minecraft.network.chat.Component
-                            .literal("§d✨ The Moon Pearl resonates... your path forward is clear!"));
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.pearl_resonates").withStyle(net.minecraft.ChatFormatting.LIGHT_PURPLE));
                     return;
                 }
             }

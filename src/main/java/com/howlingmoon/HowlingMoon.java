@@ -46,6 +46,8 @@ public class HowlingMoon {
                                                 output.accept(HMBlocks.SILVER_ORE.get().asItem());
                                                 output.accept(HMBlocks.DEEPSLATE_SILVER_ORE.get().asItem());
                                                 output.accept(HMBlocks.WOLFSBANE_FLOWER.get().asItem());
+                                                output.accept(HMItems.WEREWOLF_SPAWN_EGG.get());
+                                                output.accept(HMItems.HUNTER_SPAWN_EGG.get());
                                         }).build());
 
         public HowlingMoon(IEventBus modEventBus, ModContainer modContainer) {

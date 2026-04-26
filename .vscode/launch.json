@@ -12,11 +12,11 @@
       "projectName": "HowlingMoonRising",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/clientRunProgramArgs.txt"
+        "@/var/home/blancopolo/Programación_proyectos/HowlingMoonRising/build/moddev/clientRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dhowlingmoonrising%%/var/home/blancopolo/HowlingMoonRising/bin/main"
+        "@/var/home/blancopolo/Programación_proyectos/HowlingMoonRising/build/moddev/clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dhowlingmoonrising%%/var/home/blancopolo/Programación_proyectos/HowlingMoonRising/bin/main"
       ],
       "cwd": "${workspaceFolder}/run",
       "env": {},
@@ -34,11 +34,11 @@
       "projectName": "HowlingMoonRising",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/dataRunProgramArgs.txt"
+        "@/var/home/blancopolo/Programación_proyectos/HowlingMoonRising/build/moddev/dataRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/dataRunVmArgs.txt",
-        "-Dfml.modFolders\u003dhowlingmoonrising%%/var/home/blancopolo/HowlingMoonRising/bin/main"
+        "@/var/home/blancopolo/Programación_proyectos/HowlingMoonRising/build/moddev/dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dhowlingmoonrising%%/var/home/blancopolo/Programación_proyectos/HowlingMoonRising/bin/main"
       ],
       "cwd": "${workspaceFolder}/run",
       "env": {},
@@ -56,11 +56,11 @@
       "projectName": "HowlingMoonRising",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/gameTestServerRunProgramArgs.txt"
+        "@/var/home/blancopolo/Programación_proyectos/HowlingMoonRising/build/moddev/gameTestServerRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/gameTestServerRunVmArgs.txt",
-        "-Dfml.modFolders\u003dhowlingmoonrising%%/var/home/blancopolo/HowlingMoonRising/bin/main"
+        "@/var/home/blancopolo/Programación_proyectos/HowlingMoonRising/build/moddev/gameTestServerRunVmArgs.txt",
+        "-Dfml.modFolders\u003dhowlingmoonrising%%/var/home/blancopolo/Programación_proyectos/HowlingMoonRising/bin/main"
       ],
       "cwd": "${workspaceFolder}/run",
       "env": {},
@@ -78,11 +78,11 @@
       "projectName": "HowlingMoonRising",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/serverRunProgramArgs.txt"
+        "@/var/home/blancopolo/Programación_proyectos/HowlingMoonRising/build/moddev/serverRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@/var/home/blancopolo/HowlingMoonRising/build/moddev/serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dhowlingmoonrising%%/var/home/blancopolo/HowlingMoonRising/bin/main"
+        "@/var/home/blancopolo/Programación_proyectos/HowlingMoonRising/build/moddev/serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dhowlingmoonrising%%/var/home/blancopolo/Programación_proyectos/HowlingMoonRising/bin/main"
       ],
       "cwd": "${workspaceFolder}/run",
       "env": {},

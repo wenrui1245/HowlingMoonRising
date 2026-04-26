@@ -41,10 +41,17 @@ public class WerewolfWeaknessHandler {
 
     @SubscribeEvent
     public static void onSilverDamage(LivingIncomingDamageEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        LivingEntity victim = event.getEntity();
+        
+        boolean isWerewolf = false;
+        if (victim instanceof ServerPlayer player) {
+            WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
+            isWerewolf = cap.isWerewolf() && cap.isTransformed();
+        } else if (victim instanceof WerewolfEntity) {
+            isWerewolf = true;
+        }
 
-        WerewolfCapability cap = player.getData(WerewolfAttachment.WEREWOLF_DATA);
-        if (!cap.isWerewolf() || !cap.isTransformed()) return;
+        if (!isWerewolf) return;
 
         if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) return;
 
@@ -55,8 +62,8 @@ public class WerewolfWeaknessHandler {
         if (!isSilver) return;
 
         event.setAmount(event.getAmount() + 8.0f);
-        player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 1, false, true));
-        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 0, false, true));
+        victim.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 1, false, true));
+        victim.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 0, false, true));
     }
 
     // =====================
@@ -72,11 +79,7 @@ public class WerewolfWeaknessHandler {
         if (!cap.isWerewolf() || !cap.isTransformed()) return;
 
         event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
-        player.sendSystemMessage(
-                net.minecraft.network.chat.Component.literal(
-                        "§cThe beast within will not rest..."
-                )
-        );
+        player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.will_not_rest").withStyle(net.minecraft.ChatFormatting.RED));
     }
 
     // =====================
@@ -144,11 +147,7 @@ public class WerewolfWeaknessHandler {
             player.setItemSlot(slot, ItemStack.EMPTY);
 
             if (!msgSent) {
-                player.sendSystemMessage(
-                        net.minecraft.network.chat.Component.literal(
-                                "§cThe beast rejects your armor!"
-                        )
-                );
+                player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.rejects_armor").withStyle(net.minecraft.ChatFormatting.RED));
                 msgSent = true;
             }
         }

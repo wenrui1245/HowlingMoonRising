@@ -11,7 +11,7 @@ public class WerewolfGeoRenderer extends GeoEntityRenderer<WerewolfEntity> {
 
     public WerewolfGeoRenderer(EntityRendererProvider.Context context) {
         super(context, new WerewolfModel());
-        this.withScale(0.0625f);
+        this.withScale(1.0f);
     }
 
     @Override

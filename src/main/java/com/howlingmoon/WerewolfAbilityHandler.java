@@ -81,7 +81,7 @@ public class WerewolfAbilityHandler {
                 if (cap.getInclination() == WereInclination.SKILLFUL) {
                     cd = (int) (cd * 0.75);
                     if (player.getRandom().nextFloat() < 0.15f) {
-                        player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§b✨ Zen Reset!"));
+                        player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.zen_reset").withStyle(net.minecraft.ChatFormatting.AQUA));
                         return;
                     }
                 }
@@ -146,12 +146,11 @@ public class WerewolfAbilityHandler {
             case CLIMB -> {
                 if (player.hasEffect(MobEffects.CONDUIT_POWER)) {
                     player.removeEffect(MobEffects.CONDUIT_POWER);
-                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§7Claws retracted."));
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.claws_retracted").withStyle(net.minecraft.ChatFormatting.GRAY));
                     return false;
                 } else {
                     player.addEffect(new MobEffectInstance(MobEffects.CONDUIT_POWER, 999999, 0, false, false, false));
-                    player.sendSystemMessage(
-                            net.minecraft.network.chat.Component.literal("§6Claws extended for climbing."));
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.howlingmoonrising.claws_extended").withStyle(net.minecraft.ChatFormatting.GOLD));
                     return true;
                 }
             }
