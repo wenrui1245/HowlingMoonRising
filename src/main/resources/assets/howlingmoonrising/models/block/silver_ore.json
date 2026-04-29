@@ -1,12 +1,6 @@
 {
-  "parent": "minecraft:block/cube",
+  "parent": "minecraft:block/cube_all",
   "textures": {
-    "up": "howlingmoonrising:block/silver_ore_top",
-    "down": "howlingmoonrising:block/silver_ore_top",
-    "north": "howlingmoonrising:block/silver_ore_side",
-    "south": "howlingmoonrising:block/silver_ore_side",
-    "east": "howlingmoonrising:block/silver_ore_side",
-    "west": "howlingmoonrising:block/silver_ore_side",
-    "particle": "howlingmoonrising:block/silver_ore_side"
+    "all": "howlingmoonrising:block/silver_ore"
   }
 }
