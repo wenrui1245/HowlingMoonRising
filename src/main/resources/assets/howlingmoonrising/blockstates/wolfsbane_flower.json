@@ -1,6 +1,9 @@
 {
     "variants": {
-        "": {
+        "player_placed=false": {
+            "model": "howlingmoonrising:block/wolfsbane_flower"
+        },
+        "player_placed=true": {
             "model": "howlingmoonrising:block/wolfsbane_flower"
         }
     }

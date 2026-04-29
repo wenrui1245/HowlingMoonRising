@@ -58,7 +58,7 @@ public class WerewolfWeaknessHandler {
         ItemStack weapon = attacker.getMainHandItem();
         if (weapon.isEmpty()) return;
 
-        boolean isSilver = weapon.is(SILVER_ITEMS) || weapon.is(SILVER_INGOTS);
+        boolean isSilver = weapon.is(SILVER_ITEMS) || weapon.is(SILVER_INGOTS) || weapon.is(HMItems.SILVER_SWORD.get());
         if (!isSilver) return;
 
         event.setAmount(event.getAmount() + 8.0f);

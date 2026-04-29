@@ -32,9 +32,10 @@ public class HMBlocks {
                                         .sound(SoundType.DEEPSLATE)));
 
         public static final DeferredBlock<Block> WOLFSBANE_FLOWER = registerBlock("wolfsbane_flower",
-                        () -> new FlowerBlock(MobEffects.CONFUSION, 10,
+                        () -> new WolfsbaneFlowerBlock(MobEffects.CONFUSION, 10,
                                         BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY)
-                                                        .mapColor(MapColor.COLOR_PURPLE)));
+                                                        .mapColor(MapColor.COLOR_PURPLE)
+                                                        .lightLevel(state -> 4)));
 
         private static DeferredBlock<Block> registerBlock(String name, java.util.function.Supplier<Block> block) {
                 DeferredBlock<Block> toReturn = BLOCKS.register(name, block);

@@ -35,7 +35,7 @@
   "message.howlingmoonrising.zen_reset": "✨ Zen Reset!",
   "message.howlingmoonrising.claws_retracted": "Claws retracted.",
   "message.howlingmoonrising.claws_extended": "Claws extended!",
-  "message.howlingmoonrising.debug_moon_forced": "[Debug] Transformation failed: The full moon forces you to remain a beast!",
+  "message.howlingmoonrising.debug_moon_forced": "The full moon forces you to remain a beast!",
   "message.howlingmoonrising.will_not_rest": "The beast within will not rest...",
   "message.howlingmoonrising.rejects_armor": "The beast rejects your armor!",
   "item.howlingmoonrising.werewolf_spawn_egg": "Werewolf Spawn Egg",
